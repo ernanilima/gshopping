@@ -1,14 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/ernanilima/gshopping/src/app/router"
+	. "github.com/ernanilima/gshopping/src/app/config"
+	. "github.com/ernanilima/gshopping/src/app/router"
+	"github.com/go-chi/chi"
 )
 
-func main() {
-	r := router.StartRoutes()
+var routes *chi.Mux
 
-	log.Fatal(http.ListenAndServe(":4000", r))
+func init() {
+	StartConfig()
+
+	routes = StartRoutes()
+}
+
+func main() {
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", CONFIG.Server.Port), routes))
 }
