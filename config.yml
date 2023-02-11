@@ -1,0 +1,9 @@
+server:
+  name: "GShopping"
+  version: "0.1"
+  port: 4000
+
+database:
+  db_uri: ${DB_URI}
+  db_user: ${DB_USER}
+  db_pass: ${DB_PASS}
