@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS brand (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     description VARCHAR(50) NOT NULL UNIQUE,
     created_date TIMESTAMP NOT NULL
 );

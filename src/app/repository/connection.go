@@ -33,6 +33,10 @@ func OpenConnection() (*sql.DB, error) {
 
 // UPMigrations executa as migrations pendentes
 func UPMigrations(db *sql.DB) {
+	if err := goose.Up(db, "./db/postgres"); err != nil {
+		log.Fatalf("falha ao aplicar migrations para postgres: %s", err)
+	}
+
 	if err := goose.Up(db, "./db/migrations"); err != nil {
 		log.Fatalf("falha ao aplicar migrations: %s", err)
 	}
