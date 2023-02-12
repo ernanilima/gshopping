@@ -8,26 +8,31 @@ import (
 	"github.com/spf13/viper"
 )
 
-var CONFIG *config
+var cfg *Config
 
 // estrutura das configuracoes
-type config struct {
+type Config struct {
 	Server struct {
-		Name    string `mapstructure:"name"`
-		Version string `mapstructure:"version"`
-		Port    int    `mapstructure:"port"`
+		Port int `mapstructure:"port"`
 	} `mapstructure:"server"`
-
 	Database struct {
-		URI  string `mapstructure:"db_uri"`
-		User string `mapstructure:"db_user"`
-		Pass string `mapstructure:"db_pass"`
+		Postgres struct {
+			Host string `mapstructure:"db_host"`
+			Port string `mapstructure:"db_port"`
+			User string `mapstructure:"db_user"`
+			Pass string `mapstructure:"db_pass"`
+			Name string `mapstructure:"db_name"`
+		} `mapstructure:"postgres"`
 	} `mapstructure:"database"`
 }
 
-// StartConfig inicia a construcao das configuracoes
-func StartConfig() {
-	viper.AddConfigPath(getPwd())
+func init() {
+	startConfig()
+}
+
+// startConfig inicia a construcao das configuracoes
+func startConfig() {
+	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
 	viper.AutomaticEnv()
 
@@ -40,27 +45,27 @@ func StartConfig() {
 		log.Fatalf("Erro ao ler as configuracoes: %s", err)
 	}
 
-	CONFIG = new(config)
-	if err := viper.Unmarshal(&CONFIG); err != nil {
+	cfg = new(Config)
+	if err := viper.Unmarshal(&cfg); err != nil {
 		log.Fatalf("Nao foi possivel decodificar o arquivo de configuracao: %s", err)
 	}
 
-	CONFIG.Database = struct {
-		URI  string "mapstructure:\"db_uri\""
+	cfg.Database.Postgres = struct {
+		Host string "mapstructure:\"db_host\""
+		Port string "mapstructure:\"db_port\""
 		User string "mapstructure:\"db_user\""
 		Pass string "mapstructure:\"db_pass\""
+		Name string "mapstructure:\"db_name\""
 	}{
-		URI:  os.ExpandEnv(CONFIG.Database.URI),
-		User: os.ExpandEnv(CONFIG.Database.User),
-		Pass: os.ExpandEnv(CONFIG.Database.Pass),
+		Host: os.ExpandEnv(cfg.Database.Postgres.Host),
+		Port: os.ExpandEnv(cfg.Database.Postgres.Port),
+		User: os.ExpandEnv(cfg.Database.Postgres.User),
+		Pass: os.ExpandEnv(cfg.Database.Postgres.Pass),
+		Name: os.ExpandEnv(cfg.Database.Postgres.Name),
 	}
 }
 
-// Retorna o diretorio do projeto
-func getPwd() string {
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatalf("Erro ao obter o diretorio do projeto: %s", err)
-	}
-	return dir
+// GetConfigs retorna as configuracoes da aplicacao
+func GetConfigs() Config {
+	return *cfg
 }
