@@ -16,5 +16,8 @@ func init() {
 	if err != nil {
 		log.Fatalf("falha ao conectar com o banco de dados: %s", err)
 	}
+
+	// executa as migrations pendentes
+	repository.UPMigrations(conn)
 	conn.Close()
 }

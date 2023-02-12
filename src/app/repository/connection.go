@@ -7,6 +7,7 @@ import (
 
 	"github.com/ernanilima/gshopping/src/app/config"
 	_ "github.com/lib/pq"
+	"github.com/pressly/goose"
 )
 
 // OpenConnection abre uma conecao com o banco de dados
@@ -27,12 +28,12 @@ func OpenConnection() (*sql.DB, error) {
 		return nil, err
 	}
 
-	if err = db.Ping(); err != nil {
-		db.Close()
-		return nil, err
+	return db, db.Ping()
+}
+
+// UPMigrations executa as migrations pendentes
+func UPMigrations(db *sql.DB) {
+	if err := goose.Up(db, "./db/migrations"); err != nil {
+		log.Fatalf("falha ao aplicar migrations: %s", err)
 	}
-
-	defer db.Close()
-
-	return db, err
 }
