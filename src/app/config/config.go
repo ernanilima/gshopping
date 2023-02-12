@@ -26,12 +26,8 @@ type Config struct {
 	} `mapstructure:"database"`
 }
 
-func init() {
-	startConfig()
-}
-
-// startConfig inicia a construcao das configuracoes
-func startConfig() {
+// StartConfig inicia a construcao das configuracoes
+func StartConfig() {
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
 	viper.AutomaticEnv()
@@ -40,8 +36,7 @@ func startConfig() {
 		log.Fatalf("Erro ao carregar as variaveis de ambiente: %s", err)
 	}
 
-	err := viper.ReadInConfig()
-	if err != nil {
+	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Erro ao ler as configuracoes: %s", err)
 	}
 

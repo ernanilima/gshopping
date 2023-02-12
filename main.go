@@ -6,22 +6,16 @@ import (
 	"net/http"
 	"strings"
 
+	_ "github.com/ernanilima/gshopping/src/app"
 	"github.com/ernanilima/gshopping/src/app/config"
 	"github.com/ernanilima/gshopping/src/app/router"
-	"github.com/go-chi/chi"
 )
-
-var routes *chi.Mux
-
-func init() {
-	routes = router.StartRoutes()
-}
 
 func main() {
 	configs := config.GetConfigs()
+	routes := router.StartRoutes()
 
 	displayAPIConnection(configs)
-
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", configs.Server.Port), routes))
 }
 
