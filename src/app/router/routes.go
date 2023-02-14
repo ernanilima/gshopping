@@ -17,7 +17,9 @@ type Router struct {
 func StartRoutes() *chi.Mux {
 	r := chi.NewRouter()
 
-	routes := productRouter
+	routes := []Router{}
+	routes = append(routes, productRouter...)
+	routes = append(routes, brandRouter...)
 
 	for _, router := range routes {
 		r.Method(router.HTTPMethod, router.URI, http.HandlerFunc(router.Function))
