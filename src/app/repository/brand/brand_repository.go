@@ -28,7 +28,7 @@ func FindAll(pageable utils.Pageable) utils.Pageable {
 	var brands []model.Brand
 	for results.Next() {
 		var brand model.Brand
-		results.Scan(&pageable.TotalElements, &brand.ID, &brand.Description, &brand.CreatedDate)
+		results.Scan(&pageable.TotalElements, &brand.ID, &brand.Description, &brand.CreatedAt)
 		brands = append(brands, brand)
 	}
 
@@ -43,7 +43,7 @@ func FindById(id uuid.UUID) (model.Brand, error) {
 	result := conn.QueryRow("SELECT * FROM brand WHERE id = $1", id)
 
 	var brand model.Brand
-	if err := result.Scan(&brand.ID, &brand.Description, &brand.CreatedDate); err != nil {
+	if err := result.Scan(&brand.ID, &brand.Description, &brand.CreatedAt); err != nil {
 		return model.Brand{}, err
 	}
 
@@ -66,7 +66,7 @@ func FindByDescription(description string) ([]model.Brand, error) {
 	var brands []model.Brand
 	for results.Next() {
 		var brand model.Brand
-		results.Scan(&brand.ID, &brand.Description, &brand.CreatedDate)
+		results.Scan(&brand.ID, &brand.Description, &brand.CreatedAt)
 		brands = append(brands, brand)
 	}
 

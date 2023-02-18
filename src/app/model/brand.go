@@ -9,5 +9,5 @@ import (
 type Brand struct {
 	ID          uuid.UUID `json:"id"`
 	Description string    `json:"description"`
-	CreatedDate time.Time `json:"created_date"`
+	CreatedAt   time.Time `json:"created_at"`
 }
