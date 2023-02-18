@@ -10,6 +10,11 @@ import (
 	"github.com/google/uuid"
 )
 
+// FindAll busca uma lista com todas as marcas
+func FindAll(w http.ResponseWriter, r *http.Request) {
+	response.JSON(w, http.StatusOK, brand.FindAll())
+}
+
 // FindById busca uma marca pelo ID
 func FindById(w http.ResponseWriter, r *http.Request) {
 

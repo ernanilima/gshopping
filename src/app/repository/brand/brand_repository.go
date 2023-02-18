@@ -8,6 +8,29 @@ import (
 	"github.com/google/uuid"
 )
 
+// FindAll busca uma lista com todas as marcas
+// limitando a 30 registros
+func FindAll() []model.Brand {
+	conn, _ := repository.OpenConnection()
+	defer conn.Close()
+
+	results, err := conn.Query("SELECT * FROM brand LIMIT 30")
+
+	if err != nil {
+		return nil
+	}
+	defer results.Close()
+
+	var brands []model.Brand
+	for results.Next() {
+		var brand model.Brand
+		results.Scan(&brand.ID, &brand.Description, &brand.CreatedDate)
+		brands = append(brands, brand)
+	}
+
+	return brands
+}
+
 // FindById busca uma marca pelo ID
 func FindById(id uuid.UUID) (model.Brand, error) {
 	conn, _ := repository.OpenConnection()

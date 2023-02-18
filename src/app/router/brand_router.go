@@ -8,6 +8,11 @@ import (
 
 var brandRouter = []Router{
 	{
+		URI:        "/v1/marca",
+		HTTPMethod: http.MethodGet,
+		Function:   brand.FindAll,
+	},
+	{
 		URI:        "/v1/marca/{id}",
 		HTTPMethod: http.MethodGet,
 		Function:   brand.FindById,
