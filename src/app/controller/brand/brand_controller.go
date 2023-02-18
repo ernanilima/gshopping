@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ernanilima/gshopping/src/app/repository/brand"
+	"github.com/ernanilima/gshopping/src/app/utils"
 	"github.com/ernanilima/gshopping/src/app/utils/response"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
@@ -12,7 +13,8 @@ import (
 
 // FindAll busca uma lista com todas as marcas
 func FindAll(w http.ResponseWriter, r *http.Request) {
-	response.JSON(w, http.StatusOK, brand.FindAll())
+	pagination := utils.PaginationFilters(r)
+	response.JSON(w, http.StatusOK, brand.FindAll(pagination))
 }
 
 // FindById busca uma marca pelo ID

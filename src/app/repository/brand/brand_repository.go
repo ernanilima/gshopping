@@ -5,30 +5,34 @@ import (
 
 	"github.com/ernanilima/gshopping/src/app/model"
 	"github.com/ernanilima/gshopping/src/app/repository"
+	"github.com/ernanilima/gshopping/src/app/utils"
 	"github.com/google/uuid"
 )
 
 // FindAll busca uma lista com todas as marcas
 // limitando a 30 registros
-func FindAll() []model.Brand {
+func FindAll(pageable utils.Pageable) utils.Pageable {
 	conn, _ := repository.OpenConnection()
 	defer conn.Close()
 
-	results, err := conn.Query("SELECT * FROM brand LIMIT 30")
+	results, err := conn.Query(`
+		SELECT COUNT(*) OVER(), * FROM brand
+		ORDER BY "description"
+		LIMIT $1 OFFSET $2`, pageable.Size, pageable.Size*pageable.Page)
 
 	if err != nil {
-		return nil
+		return utils.Pageable{}
 	}
 	defer results.Close()
 
 	var brands []model.Brand
 	for results.Next() {
 		var brand model.Brand
-		results.Scan(&brand.ID, &brand.Description, &brand.CreatedDate)
+		results.Scan(&pageable.TotalElements, &brand.ID, &brand.Description, &brand.CreatedDate)
 		brands = append(brands, brand)
 	}
 
-	return brands
+	return utils.GeneratePaginationRequest(brands, pageable)
 }
 
 // FindById busca uma marca pelo ID
