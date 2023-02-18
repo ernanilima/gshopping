@@ -9,16 +9,17 @@ import (
 	"github.com/google/uuid"
 )
 
-// FindAll busca uma lista com todas as marcas
-// limitando a 30 registros
+// FindAll busca uma lista paginada de marcas
 func FindAll(pageable utils.Pageable) utils.Pageable {
 	conn, _ := repository.OpenConnection()
 	defer conn.Close()
 
-	results, err := conn.Query(`
+	query := fmt.Sprintf(`
 		SELECT COUNT(*) OVER(), * FROM brand
-		ORDER BY "description"
-		LIMIT $1 OFFSET $2`, pageable.Size, pageable.Size*pageable.Page)
+			ORDER BY %s
+			LIMIT $1 OFFSET $2`, pageable.Sort)
+
+	results, err := conn.Query(query, pageable.Size, pageable.Size*pageable.Page)
 
 	if err != nil {
 		return utils.Pageable{}
