@@ -12,4 +12,9 @@ var brandRouter = []Router{
 		HTTPMethod: http.MethodGet,
 		Function:   brand.FindById,
 	},
+	{
+		URI:        "/v1/marca/descricao/{description}",
+		HTTPMethod: http.MethodGet,
+		Function:   brand.FindByDescription,
+	},
 }

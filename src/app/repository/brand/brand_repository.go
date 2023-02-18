@@ -1,6 +1,8 @@
 package brand
 
 import (
+	"fmt"
+
 	"github.com/ernanilima/gshopping/src/app/model"
 	"github.com/ernanilima/gshopping/src/app/repository"
 	"github.com/google/uuid"
@@ -19,4 +21,27 @@ func FindById(id uuid.UUID) (model.Brand, error) {
 	}
 
 	return brand, nil
+}
+
+// FindByDescription busca uma lista de marcas pela %descricao%
+// limitando a 30 registros
+func FindByDescription(description string) ([]model.Brand, error) {
+	conn, _ := repository.OpenConnection()
+	defer conn.Close()
+
+	results, err := conn.Query("SELECT * FROM brand WHERE description ILIKE $1 LIMIT 30", fmt.Sprintf("%%%s%%", description))
+
+	if err != nil {
+		return nil, err
+	}
+	defer results.Close()
+
+	var brands []model.Brand
+	for results.Next() {
+		var brand model.Brand
+		results.Scan(&brand.ID, &brand.Description, &brand.CreatedDate)
+		brands = append(brands, brand)
+	}
+
+	return brands, nil
 }

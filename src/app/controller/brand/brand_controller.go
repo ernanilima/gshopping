@@ -1,6 +1,7 @@
 package brand
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ernanilima/gshopping/src/app/repository/brand"
@@ -27,4 +28,24 @@ func FindById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, http.StatusOK, brand)
+}
+
+// FindByDescription busca uma lista de marcas pela descricao
+func FindByDescription(w http.ResponseWriter, r *http.Request) {
+
+	description := chi.URLParam(r, "description")
+	brands, err := brand.FindByDescription(description)
+	if err != nil {
+		messageError := "Marca não encontrada"
+		response.Error(w, r, http.StatusNotFound, messageError)
+		return
+	}
+
+	if brands == nil {
+		messageError := fmt.Sprintf("Nenhuma Marca encontrada com '%s'", description)
+		response.Error(w, r, http.StatusNotFound, messageError)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, brands)
 }
