@@ -9,3 +9,10 @@ Verificar cobertura
 Criar html da cobertura
 
 `go tool cover -html=coverage.out -o coverage.html`
+
+Rodar aplicacao com docker
+```bash
+docker compose -f docker-compose.dev.yml build --no-cache
+
+docker compose -f docker-compose.dev.yml up
+```
