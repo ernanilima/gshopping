@@ -14,7 +14,8 @@ var cfg *Config
 // estrutura das configuracoes
 type Config struct {
 	Server struct {
-		Port int `mapstructure:"port"`
+		Port    int    `mapstructure:"port"`
+		Version string `mapstructure:"version"`
 	} `mapstructure:"server"`
 	Database struct {
 		Postgres struct {
