@@ -1,9 +1,11 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -30,6 +32,10 @@ func StartConfig() {
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
 	viper.AutomaticEnv()
+
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("Variaveis de ambiente serao carregadas do sistema operacional")
+	}
 
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Erro ao ler as configuracoes: %s", err)
