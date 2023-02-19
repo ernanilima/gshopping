@@ -51,25 +51,30 @@ func FindById(id uuid.UUID) (model.Brand, error) {
 	return brand, nil
 }
 
-// FindByDescription busca uma lista de marcas pela %descricao%
-// limitando a 30 registros
-func FindByDescription(description string) ([]model.Brand, error) {
+// FindByDescription busca uma lista paginada de marcas pela %descricao%
+func FindByDescription(description string, pageable utils.Pageable) (utils.Pageable, error) {
 	conn, _ := repository.OpenConnection()
 	defer conn.Close()
 
-	results, err := conn.Query("SELECT * FROM brand WHERE description ILIKE $1 LIMIT 30", fmt.Sprintf("%%%s%%", description))
+	query := fmt.Sprintf(`
+		SELECT COUNT(*) OVER(), * FROM brand
+			WHERE description ILIKE $1
+			ORDER BY %s
+			LIMIT $2 OFFSET $3`, pageable.Sort)
+
+	results, err := conn.Query(query, fmt.Sprintf("%%%s%%", description), pageable.Size, pageable.Size*pageable.Page)
 
 	if err != nil {
-		return nil, err
+		return utils.Pageable{}, err
 	}
 	defer results.Close()
 
 	var brands []model.Brand
 	for results.Next() {
 		var brand model.Brand
-		results.Scan(&brand.ID, &brand.Description, &brand.CreatedAt)
+		results.Scan(&pageable.TotalElements, &brand.ID, &brand.Description, &brand.CreatedAt)
 		brands = append(brands, brand)
 	}
 
-	return brands, nil
+	return utils.GeneratePaginationRequest(brands, pageable), nil
 }

@@ -41,14 +41,15 @@ func FindById(w http.ResponseWriter, r *http.Request) {
 func FindByDescription(w http.ResponseWriter, r *http.Request) {
 
 	description := chi.URLParam(r, "description")
-	brands, err := brand.FindByDescription(description)
+	pagination := utils.PaginationFilters(r)
+	brands, err := brand.FindByDescription(description, pagination)
 	if err != nil {
 		messageError := "Marca não encontrada"
 		response.Error(w, r, http.StatusNotFound, messageError)
 		return
 	}
 
-	if brands == nil {
+	if brands.TotalElements == 0 {
 		messageError := fmt.Sprintf("Nenhuma Marca encontrada com '%s'", description)
 		response.Error(w, r, http.StatusNotFound, messageError)
 		return
