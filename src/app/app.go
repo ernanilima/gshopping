@@ -9,7 +9,7 @@ import (
 
 func init() {
 	// carrega as configuracoes da aplicacao
-	config.StartConfig()
+	config.StartConfig(".")
 
 	// realiza uma conexao com o banco de dados
 	conn, err := repository.OpenConnection()

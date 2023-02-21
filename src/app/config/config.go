@@ -29,8 +29,8 @@ type Config struct {
 }
 
 // StartConfig inicia a construcao das configuracoes
-func StartConfig() {
-	viper.AddConfigPath(".")
+func StartConfig(path string) {
+	viper.AddConfigPath(path)
 	viper.SetConfigName("config")
 	viper.AutomaticEnv()
 

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/ernanilima/gshopping/src/app/router"
+	"github.com/go-chi/chi"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,10 +14,11 @@ import (
 func TestStartRoutes_Should_Have_Product_Route(t *testing.T) {
 	r := router.StartRoutes()
 
-	// deve ter a URI no index 0
-	assert.Equal(t, "/v1/produto", r.Routes()[0].Pattern)
-	// deve ter o metodo GET no index 0
-	assert.NotNil(t, r.Routes()[0].Handlers["GET"])
+	// deve retornar o index da URI
+	index := getIndexRoute(r.Routes(), "/v1/produto")
+
+	assert.Greater(t, index, -1, "deve ter o index maior que -1")
+	assert.NotNil(t, r.Routes()[index].Handlers["GET"], "deve ter o metodo GET")
 }
 
 // Deve retornar o status 200
@@ -35,4 +37,18 @@ func TestStartRoutes_Should_Return_Status_200(t *testing.T) {
 
 	// verifica se a resposta HTTP eh 200
 	assert.Equal(t, http.StatusOK, res.Code)
+}
+
+// retorna o index da rota
+func getIndexRoute(routes []chi.Route, route string) int {
+	index := -1
+
+	for i, r := range routes {
+		if r.Pattern == route {
+			index = i
+			break
+		}
+	}
+
+	return index
 }
