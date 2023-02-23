@@ -3,9 +3,9 @@ package brand
 import (
 	"fmt"
 
-	"github.com/ernanilima/gshopping/src/app/model"
-	"github.com/ernanilima/gshopping/src/app/repository"
-	"github.com/ernanilima/gshopping/src/app/utils"
+	"github.com/ernanilima/gshopping/app/model"
+	"github.com/ernanilima/gshopping/app/repository"
+	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/google/uuid"
 )
 

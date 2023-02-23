@@ -3,7 +3,7 @@ package router
 import (
 	"net/http"
 
-	"github.com/ernanilima/gshopping/src/app/controller/brand"
+	"github.com/ernanilima/gshopping/app/controller/brand"
 )
 
 var brandRouter = []Router{

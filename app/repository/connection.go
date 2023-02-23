@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ernanilima/gshopping/src/app/config"
+	"github.com/ernanilima/gshopping/app/config"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose"
 )

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ernanilima/gshopping/src/app/utils"
+	"github.com/ernanilima/gshopping/app/utils"
 )
 
 type standardError struct {

@@ -2,13 +2,13 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"runtime"
 )
 
 // StartBanner exibe o banner com alguns dados da aplicacao
 func StartBanner(configs Config) {
-	banner, err := ioutil.ReadFile("banner.txt")
+	banner, err := os.ReadFile("banner.txt")
 	if err != nil {
 		fmt.Println("Erro ao ler arquivo banner.txt: ", err)
 	}

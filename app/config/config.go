@@ -39,13 +39,11 @@ func StartConfig(path string) {
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Erro ao ler as configuracoes: %s", err)
+		log.Panicf("Erro ao ler as configuracoes: %s", err)
 	}
 
 	cfg = new(Config)
-	if err := viper.Unmarshal(&cfg); err != nil {
-		log.Fatalf("Nao foi possivel decodificar o arquivo de configuracao: %s", err)
-	}
+	viper.Unmarshal(&cfg)
 
 	cfg.Database.Postgres = struct {
 		Host string "mapstructure:\"db_host\""

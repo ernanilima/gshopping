@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ernanilima/gshopping/src/app/repository/brand"
-	"github.com/ernanilima/gshopping/src/app/utils"
-	"github.com/ernanilima/gshopping/src/app/utils/response"
+	"github.com/ernanilima/gshopping/app/repository/brand"
+	"github.com/ernanilima/gshopping/app/utils"
+	"github.com/ernanilima/gshopping/app/utils/response"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 )

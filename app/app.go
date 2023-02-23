@@ -3,8 +3,8 @@ package app
 import (
 	"log"
 
-	"github.com/ernanilima/gshopping/src/app/config"
-	"github.com/ernanilima/gshopping/src/app/repository"
+	"github.com/ernanilima/gshopping/app/config"
+	"github.com/ernanilima/gshopping/app/repository"
 )
 
 func init() {

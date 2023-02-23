@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	_ "github.com/ernanilima/gshopping/src/app"
-	"github.com/ernanilima/gshopping/src/app/config"
-	"github.com/ernanilima/gshopping/src/app/router"
+	_ "github.com/ernanilima/gshopping/app"
+	"github.com/ernanilima/gshopping/app/config"
+	"github.com/ernanilima/gshopping/app/router"
 )
 
 func main() {
