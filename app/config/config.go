@@ -9,8 +9,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfg *Config
-
 // estrutura das configuracoes
 type Config struct {
 	Server struct {
@@ -29,7 +27,7 @@ type Config struct {
 }
 
 // StartConfig inicia a construcao das configuracoes
-func StartConfig(path string) {
+func (cfg *Config) StartConfig(path string) *Config {
 	viper.AddConfigPath(path)
 	viper.SetConfigName("config")
 	viper.AutomaticEnv()
@@ -58,9 +56,6 @@ func StartConfig(path string) {
 		Pass: os.ExpandEnv(cfg.Database.Postgres.Pass),
 		Name: os.ExpandEnv(cfg.Database.Postgres.Name),
 	}
-}
 
-// GetConfigs retorna as configuracoes da aplicacao
-func GetConfigs() Config {
-	return *cfg
+	return cfg
 }
