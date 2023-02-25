@@ -1,24 +1,23 @@
-package brand
+package brand_controller
 
 import (
 	"fmt"
 	"net/http"
 
-	"github.com/ernanilima/gshopping/app/repository/brand"
 	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/ernanilima/gshopping/app/utils/response"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 )
 
-// FindAll busca uma lista com todas as marcas
-func FindAll(w http.ResponseWriter, r *http.Request) {
+// FindAllBrands busca uma lista com todas as marcas
+func (repo *brandRepository) FindAllBrands(w http.ResponseWriter, r *http.Request) {
 	pagination := utils.PaginationFilters(r)
-	response.JSON(w, http.StatusOK, brand.FindAll(pagination))
+	response.JSON(w, http.StatusOK, repo.BrandRepository.FindAll(pagination))
 }
 
-// FindById busca uma marca pelo ID
-func FindById(w http.ResponseWriter, r *http.Request) {
+// FindBrandById busca uma marca pelo ID
+func (repo *brandRepository) FindBrandById(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
@@ -27,7 +26,7 @@ func FindById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	brand, err := brand.FindById(id)
+	brand, err := repo.BrandRepository.FindById(id)
 	if err != nil {
 		messageError := "Marca não encontrada"
 		response.Error(w, r, http.StatusNotFound, messageError)
@@ -37,12 +36,12 @@ func FindById(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, brand)
 }
 
-// FindByDescription busca uma lista de marcas pela descricao
-func FindByDescription(w http.ResponseWriter, r *http.Request) {
+// FindAllBrandsByDescription busca uma lista de marcas pela descricao
+func (repo *brandRepository) FindAllBrandsByDescription(w http.ResponseWriter, r *http.Request) {
 
 	description := chi.URLParam(r, "description")
 	pagination := utils.PaginationFilters(r)
-	brands, err := brand.FindByDescription(description, pagination)
+	brands, err := repo.BrandRepository.FindByDescription(description, pagination)
 	if err != nil {
 		messageError := "Marca não encontrada"
 		response.Error(w, r, http.StatusNotFound, messageError)

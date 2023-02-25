@@ -1,4 +1,4 @@
-package product
+package product_controller
 
 import "net/http"
 
