@@ -3,26 +3,11 @@ package brand_repository
 import (
 	"fmt"
 
-	"github.com/ernanilima/gshopping/app/config"
 	"github.com/ernanilima/gshopping/app/model"
 	"github.com/ernanilima/gshopping/app/repository/database"
 	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/google/uuid"
 )
-
-func NewBrandRepository(cfg *config.Config) BrandRepository {
-	return &connection{cfg}
-}
-
-type connection struct {
-	*config.Config
-}
-
-type BrandRepository interface {
-	FindAll(pageable utils.Pageable) utils.Pageable
-	FindById(id uuid.UUID) (model.Brand, error)
-	FindByDescription(description string, pageable utils.Pageable) (utils.Pageable, error)
-}
 
 // FindAll busca uma lista paginada de marcas
 func (cfg *connection) FindAll(pageable utils.Pageable) utils.Pageable {
