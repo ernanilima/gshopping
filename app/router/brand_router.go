@@ -3,29 +3,32 @@ package router
 import (
 	"net/http"
 
-	"github.com/ernanilima/gshopping/app/controller"
+	brand_controller "github.com/ernanilima/gshopping/app/controller/brand"
 )
 
-var brandRouter = []Router{
-	{
-		URI:        "/v1/marca",
-		HTTPMethod: http.MethodGet,
-		Function: func(c controller.Controller, w http.ResponseWriter, r *http.Request) {
-			c.FindAllBrands(w, r)
+// brandRouter recebe o controller e retorna a funcao correspondente ao URI e ao HTTPMethod para BrandController
+func brandRouter(controller brand_controller.BrandController) []Router {
+	return []Router{
+		{
+			URI:        "/v1/marca",
+			HTTPMethod: http.MethodGet,
+			Function: func(w http.ResponseWriter, r *http.Request) {
+				controller.FindAllBrands(w, r)
+			},
 		},
-	},
-	{
-		URI:        "/v1/marca/{id}",
-		HTTPMethod: http.MethodGet,
-		Function: func(c controller.Controller, w http.ResponseWriter, r *http.Request) {
-			c.FindBrandById(w, r)
+		{
+			URI:        "/v1/marca/{id}",
+			HTTPMethod: http.MethodGet,
+			Function: func(w http.ResponseWriter, r *http.Request) {
+				controller.FindBrandById(w, r)
+			},
 		},
-	},
-	{
-		URI:        "/v1/marca/descricao/{description}",
-		HTTPMethod: http.MethodGet,
-		Function: func(c controller.Controller, w http.ResponseWriter, r *http.Request) {
-			c.FindAllBrandsByDescription(w, r)
+		{
+			URI:        "/v1/marca/descricao/{description}",
+			HTTPMethod: http.MethodGet,
+			Function: func(w http.ResponseWriter, r *http.Request) {
+				controller.FindAllBrandsByDescription(w, r)
+			},
 		},
-	},
+	}
 }

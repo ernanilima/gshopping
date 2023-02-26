@@ -11,21 +11,19 @@ import (
 type Router struct {
 	URI        string
 	HTTPMethod string
-	Function   func(controller.Controller, http.ResponseWriter, *http.Request)
+	Function   func(http.ResponseWriter, *http.Request)
 }
 
 // StartRoutes inicia as rotas
-func StartRoutes(c controller.Controller) *chi.Mux {
+func StartRoutes(controller controller.Controller) *chi.Mux {
 	r := chi.NewRouter()
 
 	routes := []Router{}
 	routes = append(routes, productRouter...)
-	routes = append(routes, brandRouter...)
+	routes = append(routes, brandRouter(controller)...)
 
 	for _, router := range routes {
-		r.Method(router.HTTPMethod, router.URI, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			router.Function(c, w, r)
-		}))
+		r.Method(router.HTTPMethod, router.URI, http.HandlerFunc(router.Function))
 	}
 
 	return r
