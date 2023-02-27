@@ -1,54 +1,58 @@
 package router_test
 
-// import (
-// 	"net/http"
-// 	"net/http/httptest"
-// 	"testing"
+import (
+	"net/http"
+	"strings"
+	"testing"
 
-// 	"github.com/ernanilima/gshopping/app/router"
-// 	"github.com/go-chi/chi"
-// 	"github.com/stretchr/testify/assert"
-// )
+	"github.com/ernanilima/gshopping/app/router"
+	"github.com/ernanilima/gshopping/app/test/mocks"
+	"github.com/go-chi/chi"
+	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
+)
 
-// // Deve ter a rota de produto
-// func TestStartRoutes_Should_Have_Product_Route(t *testing.T) {
-// 	r := router.StartRoutes()
+// Deve existir todas as rotas
+func TestStartRoutes_Should_Exist_All_Routes(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	controller := mocks.NewMockController(ctrl)
 
-// 	// deve retornar o index da URI
-// 	index := getIndexRoute(r.Routes(), "/v1/produto")
+	r := router.StartRoutes(controller)
 
-// 	assert.Greater(t, index, -1, "deve ter o index maior que -1")
-// 	assert.NotNil(t, r.Routes()[index].Handlers["GET"], "deve ter o metodo GET")
-// }
+	routes := []http.Handler{
+		getRouteByName(r.Routes(), "/v1/marca").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/marca/{id}").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/marca/descricao/{description}").Handlers["GET"],
+	}
 
-// // Deve retornar o status 200
-// func TestStartRoutes_Should_Return_Status_200(t *testing.T) {
-// 	r := router.StartRoutes()
+	assert.Equal(t, getTotalRoutesByName(r.Routes(), "/v1/marca"), len(routes), "Deve existir 3 rotas")
+	for _, route := range routes {
+		assert.NotNil(t, route, "deve ter o metodo GET")
+	}
+}
 
-// 	// cria uma requisicao HTTP GET para "/v1/produto"
-// 	req, err := http.NewRequest("GET", "/v1/produto", nil)
-// 	assert.NoError(t, err)
+func getTotalRoutesByName(routes []chi.Route, route string) int {
+	var total = 0
 
-// 	// cria um HTTP recorder para receber a resposta
-// 	res := httptest.NewRecorder()
+	for _, r := range routes {
+		if strings.Contains(r.Pattern, route) {
+			total++
+		}
+	}
 
-// 	// executa a requisicao no router
-// 	r.ServeHTTP(res, req)
+	return total
+}
 
-// 	// verifica se a resposta HTTP eh 200
-// 	assert.Equal(t, http.StatusOK, res.Code)
-// }
+func getRouteByName(routes []chi.Route, route string) chi.Route {
+	var matchingRoutes chi.Route
 
-// // retorna o index da rota
-// func getIndexRoute(routes []chi.Route, route string) int {
-// 	index := -1
+	for _, r := range routes {
+		if strings.Contains(r.Pattern, route) {
+			matchingRoutes = r
+			break
+		}
+	}
 
-// 	for i, r := range routes {
-// 		if r.Pattern == route {
-// 			index = i
-// 			break
-// 		}
-// 	}
-
-// 	return index
-// }
+	return matchingRoutes
+}
