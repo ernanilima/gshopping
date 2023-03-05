@@ -75,15 +75,13 @@ func TestFindAllBrands_Should_Return_Status_200_To_Fetch_All_Brands(t *testing.T
 func TestFindBrandById_Should_Return_Status_200_To_Fetch_A_Brand_By_ID(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-
 	repository := mocks.NewMockRepository(ctrl)
 	controller := controller.NewController(repository)
-
-	repository.EXPECT().FindById(gomock.Any()).Return(model.Brand{}, nil)
+	repository.EXPECT().FindById(gomock.Any()).Return(brands[0], nil)
 
 	r := router.StartRoutes(controller)
 
-	// cria uma requisicao HTTP GET para "/v1/produto"
+	// cria uma requisicao HTTP GET para "/v1/marca/{id}"
 	req, err := http.NewRequest("GET", "/v1/marca/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", nil)
 	assert.NoError(t, err)
 
@@ -93,8 +91,15 @@ func TestFindBrandById_Should_Return_Status_200_To_Fetch_A_Brand_By_ID(t *testin
 	// executa a requisicao no router
 	r.ServeHTTP(res, req)
 
-	// verifica se a resposta HTTP eh 200
+	var result model.Brand
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
 	assert.Equal(t, http.StatusOK, res.Code)
+	assert.NotNil(t, result.ID)
+	assert.Equal(t, "Marda para teste 1", result.Description)
+	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), result.CreatedAt)
 }
 
 // Deve retornar o status 200 para buscar todas as Marcas por descricao
