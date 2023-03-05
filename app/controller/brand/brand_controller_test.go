@@ -12,6 +12,7 @@ import (
 	"github.com/ernanilima/gshopping/app/router"
 	"github.com/ernanilima/gshopping/app/test/mocks"
 	"github.com/ernanilima/gshopping/app/utils"
+	"github.com/ernanilima/gshopping/app/utils/response"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
@@ -100,6 +101,37 @@ func TestFindBrandById_Should_Return_Status_200_To_Fetch_A_Brand_By_ID(t *testin
 	assert.NotNil(t, result.ID)
 	assert.Equal(t, "Marda para teste 1", result.Description)
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), result.CreatedAt)
+}
+
+// Deve retornar o status 422 para buscar uma marca por id quando informar o id invalido
+func TestFindBrandById_Should_Return_Status_422_To_Fetch_A_Brand_By_ID_When_Informing_The_Invalid_ID(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	controller := controller.NewController(mocks.NewMockRepository(ctrl))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP GET para "/v1/marca/{id}"
+	req, err := http.NewRequest("GET", "/v1/marca/123", nil)
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusUnprocessableEntity, res.Code)
+	assert.NotNil(t, result.Timestamp)
+	assert.Equal(t, res.Code, result.Status)
+	assert.Equal(t, http.StatusText(res.Code), result.Error)
+	assert.Equal(t, "ID inválido", result.Message)
+	assert.Equal(t, "/v1/marca/123", result.Path)
 }
 
 // Deve retornar o status 200 para buscar marcas por descricao

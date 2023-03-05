@@ -8,7 +8,7 @@ import (
 	"github.com/ernanilima/gshopping/app/utils"
 )
 
-type standardError struct {
+type StandardError struct {
 	Timestamp string `json:"timestamp"`
 	Status    int    `json:"status"`
 	Error     string `json:"error"`
@@ -41,7 +41,7 @@ func JSON(w http.ResponseWriter, statusCode int, data interface{}) {
 
 // Error eh usado para retornar um erro personalizado
 func Error(w http.ResponseWriter, r *http.Request, statusCode int, msg string) {
-	err := standardError{
+	err := StandardError{
 		Timestamp: time.Now().Format(time.RFC3339),
 		Status:    statusCode,
 		Error:     http.StatusText(statusCode),
