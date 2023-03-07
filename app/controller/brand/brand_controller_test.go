@@ -2,6 +2,7 @@ package brand_controller_test
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -132,6 +133,39 @@ func TestFindBrandById_Should_Return_Status_422_To_Fetch_A_Brand_By_ID_When_Info
 	assert.Equal(t, http.StatusText(res.Code), result.Error)
 	assert.Equal(t, "ID inválido", result.Message)
 	assert.Equal(t, "/v1/marca/123", result.Path)
+}
+
+// Deve retornar o status 404 para buscar uma marca por id quando nao localizar nenhuma marca
+func TestFindBrandById_Should_Return_Status_404_To_Fetch_A_Brand_By_ID_When_No_Brand_Is_Found(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().FindById(gomock.Any()).Return(model.Brand{}, errors.New("Error"))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP GET para "/v1/marca/{id}"
+	req, err := http.NewRequest("GET", "/v1/marca/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", nil)
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusNotFound, res.Code)
+	assert.NotNil(t, result.Timestamp)
+	assert.Equal(t, res.Code, result.Status)
+	assert.Equal(t, http.StatusText(res.Code), result.Error)
+	assert.Equal(t, "Marca não encontrada", result.Message)
+	assert.Equal(t, "/v1/marca/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", result.Path)
 }
 
 // Deve retornar o status 200 para buscar marcas por descricao
