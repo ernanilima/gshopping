@@ -42,13 +42,7 @@ func (repo *brandRepository) FindAllBrandsByDescription(w http.ResponseWriter, r
 	description := chi.URLParam(r, "description")
 	pagination := utils.PaginationFilters(r)
 	brands, err := repo.BrandRepository.FindByDescription(description, pagination)
-	if err != nil {
-		messageError := "Marca não encontrada"
-		response.Error(w, r, http.StatusNotFound, messageError)
-		return
-	}
-
-	if brands.TotalElements == 0 {
+	if err != nil || brands.TotalElements == 0 {
 		messageError := fmt.Sprintf("Nenhuma Marca encontrada com '%s'", description)
 		response.Error(w, r, http.StatusNotFound, messageError)
 		return

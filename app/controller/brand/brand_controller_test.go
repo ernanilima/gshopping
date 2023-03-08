@@ -208,3 +208,36 @@ func TestFindAllBrandsByDescription_Should_Return_Status_200_To_Fetch_Brands_By_
 	assert.Equal(t, 0, result.Page)
 	assert.Equal(t, 2, result.NumberOfElements)
 }
+
+// Deve retornar o status 404 para buscar marcas por descricao quando nao localizar nenhuma marca por erro na busca
+func TestFindAllBrandsByDescription_Should_Return_Status_404_To_Fetch_Brands_By_Description_When_Not_Finding_Any_Brand_Due_To_Search_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().FindByDescription(gomock.Any(), gomock.Any()).Return(utils.Pageable{}, errors.New("Error"))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP GET para "/v1/marca/descricao/{description}"
+	req, err := http.NewRequest("GET", "/v1/marca/descricao/nao existe", nil)
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusNotFound, res.Code)
+	assert.NotNil(t, result.Timestamp)
+	assert.Equal(t, result.Status, res.Code)
+	assert.Equal(t, result.Error, http.StatusText(res.Code))
+	assert.Equal(t, result.Message, "Nenhuma Marca encontrada com 'nao existe'")
+	assert.Equal(t, result.Path, "/v1/marca/descricao/nao existe")
+}
