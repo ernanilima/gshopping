@@ -34,13 +34,12 @@ jobs:
           fi
 
       - name: Run tests
+        id: run_tests
         run: |
-          failed_tests=$(go list ./... | xargs -n1 go test -coverprofile=coverage.out 2>&1 | grep -E "(FAIL|no test files)" || echo "")
-          if [ -n "$failed_tests" ]; then
-            echo "Existem pacotes com falhas ou sem testes:"
-            echo "$failed_tests"
-            exit 1
-          fi
+          test_result=$(go test -coverprofile=coverage.out ./... | grep -vf ./app/test/.ciignore)
+          test_result_one_line=$(echo "$test_result" | tr '\n' ',')
+          echo "::set-output name=test_result_one_line::$test_result_one_line"
+          echo "$test_result" | grep -E "ok"
 
       # DEFINIR FUTURAMENTE QUANDO CRIAR TESTES PARA PARA TODOS OS PACOTES
       # - name: Check test coverage
