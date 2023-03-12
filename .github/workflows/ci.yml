@@ -24,6 +24,15 @@ jobs:
           go mod download
           go mod tidy
 
+      - name: Validate .ciignore
+        run: |
+          ciignore=$(grep -vf <(go list ./...) ./app/test/.ciignore || echo "")
+          if [ -n "$ciignore" ]; then
+            echo "Existem pacotes invalidos para serem ignorados:"
+            echo "$ciignore"
+            exit 1
+          fi
+
       - name: Run tests
         run: |
           failed_tests=$(go list ./... | xargs -n1 go test -coverprofile=coverage.out 2>&1 | grep -E "(FAIL|no test files)" || echo "")
