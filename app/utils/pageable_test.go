@@ -46,3 +46,23 @@ func TestPaginationFilters_Should_Return_Default_Pagination_Data_With_Change_Onl
 	assert.Equal(t, "id ASC", result.Sort)
 	assert.Equal(t, 0, result.NumberOfElements)
 }
+
+// Deve retornar os dados de paginacao padrao com alteracao apenas em size quando informar apenas esse parametro
+func TestPaginationFilters_Should_Return_Default_Pagination_Data_With_Change_Only_In_SIZE_When_Informing_Only_This_Parameter(t *testing.T) {
+	request := &http.Request{
+		URL: &url.URL{
+			RawQuery: "size=20",
+		},
+	}
+
+	result := utils.PaginationFilters(request)
+
+	// verifica os resultados
+	assert.Nil(t, result.Content)
+	assert.Equal(t, 0, result.TotalPages)
+	assert.Equal(t, 0, result.TotalElements)
+	assert.Equal(t, 20, result.Size)
+	assert.Equal(t, 0, result.Page)
+	assert.Equal(t, "id ASC", result.Sort)
+	assert.Equal(t, 0, result.NumberOfElements)
+}
