@@ -126,3 +126,23 @@ func TestPaginationFilters_Should_Return_Pagination_Data_According_To_The_Data_P
 	assert.Equal(t, "description asc", result.Sort)
 	assert.Equal(t, 0, result.NumberOfElements)
 }
+
+// Deve retornar os dados de paginacao conforme os dados passados por parametro (sort desc)
+func TestPaginationFilters_Should_Return_Pagination_Data_According_To_The_Data_Passed_By_Parameter_SORT_DESC(t *testing.T) {
+	request := &http.Request{
+		URL: &url.URL{
+			RawQuery: "size=20&page=2&sort=description,desc",
+		},
+	}
+
+	result := utils.PaginationFilters(request)
+
+	// verifica os resultados
+	assert.Nil(t, result.Content)
+	assert.Equal(t, 0, result.TotalPages)
+	assert.Equal(t, 0, result.TotalElements)
+	assert.Equal(t, 20, result.Size)
+	assert.Equal(t, 2, result.Page)
+	assert.Equal(t, "description desc", result.Sort)
+	assert.Equal(t, 0, result.NumberOfElements)
+}
