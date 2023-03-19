@@ -4,10 +4,41 @@ import (
 	"net/http"
 	"net/url"
 	"testing"
+	"time"
 
+	"github.com/ernanilima/gshopping/app/model"
 	"github.com/ernanilima/gshopping/app/utils"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
+
+var brands = []model.Brand{
+	{
+		ID:          uuid.New(),
+		Description: "Marda para teste 1",
+		CreatedAt:   time.Date(2020, time.January, 1, 21, 31, 41, 0, time.UTC),
+	},
+	{
+		ID:          uuid.New(),
+		Description: "Marda para teste 2",
+		CreatedAt:   time.Date(2020, time.January, 2, 22, 32, 42, 0, time.UTC),
+	},
+	{
+		ID:          uuid.New(),
+		Description: "Marda para teste 3",
+		CreatedAt:   time.Date(2020, time.January, 3, 23, 33, 43, 0, time.UTC),
+	},
+	{
+		ID:          uuid.New(),
+		Description: "Marda para teste 4",
+		CreatedAt:   time.Date(2020, time.January, 4, 24, 34, 44, 0, time.UTC),
+	},
+	{
+		ID:          uuid.New(),
+		Description: "Marda para teste 5",
+		CreatedAt:   time.Date(2020, time.January, 5, 25, 35, 45, 0, time.UTC),
+	},
+}
 
 // Deve retornar os dados de paginacao padrao quando nao informar filtros de paginacao
 func TestPaginationFilters_Should_Return_Default_Pagination_Data_When_Not_Providing_Pagination_Filters(t *testing.T) {
@@ -145,4 +176,26 @@ func TestPaginationFilters_Should_Return_Pagination_Data_According_To_The_Data_P
 	assert.Equal(t, 2, result.Page)
 	assert.Equal(t, "description desc", result.Sort)
 	assert.Equal(t, 0, result.NumberOfElements)
+}
+
+// Deve retornar um Pageable com os dados que devem ser exibidos em um request para uma entidade
+func TestGeneratePaginationRequest_Should_Return_A_Pageable_With_The_Data_That_Must_Be_Displayed_In_A_Request_For_An_Entity(t *testing.T) {
+
+	content := []model.Brand{brands[0]}
+
+	pageable := utils.Pageable{
+		TotalElements: len(content), // total de entidades localizadas
+		Size:          20,           // total de entidades por pagina
+		Page:          0,            // pagina atual
+	}
+
+	result := utils.GeneratePaginationRequest(content, pageable)
+
+	// verifica os resultados
+	assert.NotNil(t, result.Content)
+	assert.Equal(t, 0, result.TotalPages)
+	assert.Equal(t, 1, result.TotalElements)
+	assert.Equal(t, 20, result.Size)
+	assert.Equal(t, 0, result.Page)
+	assert.Equal(t, 1, result.NumberOfElements)
 }
