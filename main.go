@@ -18,10 +18,7 @@ func main() {
 	config = config.StartConfig(".")
 
 	// realiza uma conexao com o banco de dados
-	conn, err := database.OpenConnection(config)
-	if err != nil {
-		log.Fatalf("falha ao conectar com o banco de dados: %s", err)
-	}
+	conn := database.OpenConnection(config)
 
 	// executa as migrations pendentes
 	database.UPMigrations(conn)

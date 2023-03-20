@@ -11,7 +11,7 @@ import (
 
 // FindAll busca uma lista paginada de marcas
 func (cfg *connection) FindAll(pageable utils.Pageable) utils.Pageable {
-	conn, _ := database.OpenConnection(cfg.Config)
+	conn := database.OpenConnection(cfg.Config)
 	defer conn.Close()
 
 	query := fmt.Sprintf(`
@@ -38,7 +38,7 @@ func (cfg *connection) FindAll(pageable utils.Pageable) utils.Pageable {
 
 // FindById busca uma marca pelo ID
 func (cfg *connection) FindById(id uuid.UUID) (model.Brand, error) {
-	conn, _ := database.OpenConnection(cfg.Config)
+	conn := database.OpenConnection(cfg.Config)
 	defer conn.Close()
 
 	result := conn.QueryRow("SELECT * FROM brand WHERE id = $1", id)
@@ -53,7 +53,7 @@ func (cfg *connection) FindById(id uuid.UUID) (model.Brand, error) {
 
 // FindByDescription busca uma lista paginada de marcas pela %descricao%
 func (cfg *connection) FindByDescription(description string, pageable utils.Pageable) (utils.Pageable, error) {
-	conn, _ := database.OpenConnection(cfg.Config)
+	conn := database.OpenConnection(cfg.Config)
 	defer conn.Close()
 
 	query := fmt.Sprintf(`

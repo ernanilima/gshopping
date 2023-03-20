@@ -12,7 +12,7 @@ import (
 )
 
 // OpenConnection abre uma conecao com o banco de dados
-func OpenConnection(configs *config.Config) (*sql.DB, error) {
+func OpenConnection(configs *config.Config) *sql.DB {
 	configPostgres := configs.Database.Postgres
 
 	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -24,11 +24,13 @@ func OpenConnection(configs *config.Config) (*sql.DB, error) {
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatalf("falha ao conectar com o postgres: %s", err)
-		return nil, err
+		log.Fatalf("falha ao conectar com o banco de dados: %s", err)
+	}
+	if err := db.Ping(); err != nil {
+		log.Fatalf("falha ao conectar com o banco de dados: %s", err)
 	}
 
-	return db, db.Ping()
+	return db
 }
 
 // UPMigrations executa as migrations pendentes
