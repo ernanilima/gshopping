@@ -221,3 +221,25 @@ func TestGeneratePaginationRequest_Should_Return_A_Pageable_With_The_Data_That_M
 	assert.Equal(t, 0, result.Page)
 	assert.Equal(t, 5, result.NumberOfElements) // total enditades que serao exibidas
 }
+
+// Deve retornar um Pageable com os dados que devem ser exibidos em um request para diversas entidades para diversas paginas
+func TestGeneratePaginationRequest_Should_Return_A_Pageable_With_The_Data_That_Must_Be_Displayed_In_A_Request_For_Several_Entities_For_Several_Pages(t *testing.T) {
+
+	content := brands
+
+	pageable := utils.Pageable{
+		TotalElements: 11, // total de entidades localizadas
+		Size:          3,  // total de entidades por pagina
+		Page:          1,  // pagina atual
+	}
+
+	result := utils.GeneratePaginationRequest(content, pageable)
+
+	// verifica os resultados
+	assert.NotNil(t, result.Content)
+	assert.Equal(t, 3, result.TotalPages)
+	assert.Equal(t, 11, result.TotalElements)
+	assert.Equal(t, 3, result.Size)
+	assert.Equal(t, 1, result.Page)
+	assert.Equal(t, 5, result.NumberOfElements) // total enditades que serao exibidas
+}
