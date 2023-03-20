@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
-
-	"github.com/ernanilima/gshopping/app/utils"
 )
 
 type StandardError struct {
@@ -14,22 +12,6 @@ type StandardError struct {
 	Error     string `json:"error"`
 	Message   string `json:"message"`
 	Path      string `json:"path"`
-}
-
-// JSON eh usado para retornar sucesso
-func JSONPageable(w http.ResponseWriter, statusCode int, data interface{}) {
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-
-	dataPageable := utils.Pageable{
-		Content:       data,
-		TotalPages:    1,
-		TotalElements: 10,
-		Size:          111,
-		Page:          0,
-	}
-
-	json.NewEncoder(w).Encode(dataPageable)
 }
 
 // JSON eh usado para retornar sucesso

@@ -48,3 +48,25 @@ func TestJSON_Should_Return_A_Request_For_Success(t *testing.T) {
 	assert.Equal(t, "Marda para teste 2", result[1].Description)
 	assert.Equal(t, time.Date(2022, time.February, 2, 22, 32, 42, 0, time.UTC), result[1].CreatedAt)
 }
+
+// Deve retornar um request usado para erro
+func TestError_Should_Return_A_Request_For_Error(t *testing.T) {
+	req, err := http.NewRequest("GET", "/v1/marca?size=12&page=0&sort=id,asc", nil)
+	assert.NoError(t, err)
+	res := httptest.NewRecorder()
+	messageError := "Não encontrada"
+
+	response.Error(res, req, http.StatusNotFound, messageError)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusNotFound, res.Code)
+	assert.NotNil(t, result.Timestamp)
+	assert.Equal(t, res.Code, result.Status)
+	assert.Equal(t, http.StatusText(res.Code), result.Error)
+	assert.Equal(t, "Não encontrada", result.Message)
+	assert.Equal(t, "/v1/marca", result.Path)
+}
