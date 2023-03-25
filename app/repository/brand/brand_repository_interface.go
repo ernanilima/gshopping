@@ -1,18 +1,18 @@
 package brand_repository
 
 import (
-	"github.com/ernanilima/gshopping/app/config"
 	"github.com/ernanilima/gshopping/app/model"
+	"github.com/ernanilima/gshopping/app/repository/database"
 	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/google/uuid"
 )
 
-func NewBrandRepository(cfg *config.Config) BrandRepository {
-	return &connection{cfg}
+func NewBrandRepository(connector database.DatabaseConnector) BrandRepository {
+	return &BrandConnection{connector}
 }
 
-type connection struct {
-	*config.Config
+type BrandConnection struct {
+	database.DatabaseConnector
 }
 
 type BrandRepository interface {

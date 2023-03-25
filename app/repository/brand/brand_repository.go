@@ -4,14 +4,13 @@ import (
 	"fmt"
 
 	"github.com/ernanilima/gshopping/app/model"
-	"github.com/ernanilima/gshopping/app/repository/database"
 	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/google/uuid"
 )
 
 // FindAll busca uma lista paginada de marcas
-func (cfg *connection) FindAll(pageable utils.Pageable) utils.Pageable {
-	conn := database.OpenConnection(cfg.Config)
+func (c *BrandConnection) FindAll(pageable utils.Pageable) utils.Pageable {
+	conn := c.OpenConnection()
 	defer conn.Close()
 
 	query := fmt.Sprintf(`
@@ -37,8 +36,8 @@ func (cfg *connection) FindAll(pageable utils.Pageable) utils.Pageable {
 }
 
 // FindById busca uma marca pelo ID
-func (cfg *connection) FindById(id uuid.UUID) (model.Brand, error) {
-	conn := database.OpenConnection(cfg.Config)
+func (c *BrandConnection) FindById(id uuid.UUID) (model.Brand, error) {
+	conn := c.OpenConnection()
 	defer conn.Close()
 
 	result := conn.QueryRow("SELECT * FROM brand WHERE id = $1", id)
@@ -52,8 +51,8 @@ func (cfg *connection) FindById(id uuid.UUID) (model.Brand, error) {
 }
 
 // FindByDescription busca uma lista paginada de marcas pela %descricao%
-func (cfg *connection) FindByDescription(description string, pageable utils.Pageable) (utils.Pageable, error) {
-	conn := database.OpenConnection(cfg.Config)
+func (c *BrandConnection) FindByDescription(description string, pageable utils.Pageable) (utils.Pageable, error) {
+	conn := c.OpenConnection()
 	defer conn.Close()
 
 	query := fmt.Sprintf(`

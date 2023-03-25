@@ -11,9 +11,18 @@ import (
 	"github.com/pressly/goose"
 )
 
+type DatabaseConnector interface {
+	OpenConnection() *sql.DB
+	UPMigrations()
+}
+
+type DatabaseConfig struct {
+	*config.Config
+}
+
 // OpenConnection abre uma conecao com o banco de dados
-func OpenConnection(configs *config.Config) *sql.DB {
-	configPostgres := configs.Database.Postgres
+func (databaseConfig *DatabaseConfig) OpenConnection() *sql.DB {
+	configPostgres := databaseConfig.Database.Postgres
 
 	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		configPostgres.Host,
@@ -34,7 +43,10 @@ func OpenConnection(configs *config.Config) *sql.DB {
 }
 
 // UPMigrations executa as migrations pendentes
-func UPMigrations(db *sql.DB) {
+func (databaseConfig *DatabaseConfig) UPMigrations() {
+	db := databaseConfig.OpenConnection()
+	defer db.Close()
+
 	if err := goose.Up(db, "./db/postgres"); err != nil {
 		log.Fatalf("falha ao aplicar migrations para postgres: %s", err)
 	}

@@ -1,13 +1,13 @@
 package repository
 
 import (
-	"github.com/ernanilima/gshopping/app/config"
 	brand_repository "github.com/ernanilima/gshopping/app/repository/brand"
+	"github.com/ernanilima/gshopping/app/repository/database"
 )
 
-func NewRepository(cfg *config.Config) Repository {
+func NewRepository(connector database.DatabaseConnector) Repository {
 	return &repository{
-		brand_repository.NewBrandRepository(cfg),
+		brand_repository.NewBrandRepository(connector),
 	}
 }
 

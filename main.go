@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/ernanilima/gshopping/app"
-	_ "github.com/ernanilima/gshopping/app"
 	"github.com/ernanilima/gshopping/app/config"
 	"github.com/ernanilima/gshopping/app/repository/database"
 	"github.com/ernanilima/gshopping/app/router"
@@ -14,20 +13,22 @@ import (
 
 func main() {
 	// carrega as configuracoes da aplicacao
-	var config = &config.Config{}
-	config = config.StartConfig(".")
+	var configs = &config.Config{}
+	configs = configs.StartConfig(".")
 
-	// realiza uma conexao com o banco de dados
-	conn := database.OpenConnection(config)
+	// captura as configuracoes do banco de dados
+	databaseConfig := &database.DatabaseConfig{Config: configs}
+	// executa todas as migracoes
+	databaseConfig.UPMigrations()
 
-	// executa as migrations pendentes
-	database.UPMigrations(conn)
-	conn.Close()
-
-	controller := app.Init(config)
+	// inicializa os repositories e os controllers
+	controller := app.Init(databaseConfig)
+	// inicia as rotas
 	routes := router.StartRoutes(controller)
 
-	config.StartBanner()
+	// inicia o banner
+	configs.StartBanner()
 
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.Server.Port), routes))
+	// executa a aplicacao
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", configs.Server.Port), routes))
 }
