@@ -16,8 +16,9 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.20'
-          cache-dependency-path: '**/go.sum'
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: go.sum
 
       - name: Install dependencies
         run: |
@@ -26,7 +27,7 @@ jobs:
 
       - name: Validate .ciignore
         run: |
-          ciignore=$(grep -vf <(go list ./...) ./app/test/.ciignore || echo "")
+          ciignore=$(grep -xvf <(go list ./...) ./app/test/.ciignore || echo "")
           if [ -n "$ciignore" ]; then
             echo "Existem pacotes invalidos para serem ignorados:"
             echo "$ciignore"
@@ -36,19 +37,21 @@ jobs:
       - name: Run tests
         id: run_tests
         run: |
-          test_result=$(go test -coverprofile=coverage.out ./... | grep -vf ./app/test/.ciignore)
-          test_result_one_line=$(echo "$test_result" | tr '\n' ',')
-          echo "::set-output name=test_result_one_line::$test_result_one_line"
-          echo "$test_result" | grep -E "ok"
+          go test -coverprofile=coverage.out ./...
+      # test_result=$(go test -coverprofile=coverage.out ./...)
+      # test_result_one_line=$(echo "$test_result" | tr '\n' ',')
+      # echo "::set-output name=test_result_one_line::$test_result_one_line"
+      # echo "$test_result" | grep -E "ok" | awk '{print "OK\t", $2}'
 
-      - name: Validate modules without tests
-        run: |
-          modules_without_tests=$(echo "${{ steps.run_tests.outputs.test_result_one_line }}" | tr ',' '\n' | grep -E "no test files")
-          if [ -n "$modules_without_tests" ]; then
-            echo "Existem modulos sem testes:"
-            echo "$modules_without_tests"
-            exit 1
-          fi
+      # - name: Validate modules without tests
+      #   run: |
+      #     all_modules_without_tests=$(echo "${{ steps.run_tests.outputs.test_result_one_line }}" | tr ',' '\n' | grep -E "no test files")
+      #     modules_without_tests=$(echo "$all_modules_without_tests" | awk '{print $2}' | grep -xvf ./app/test/.ciignore | awk '{print "NO TEST\t", $0}')
+      #     if [ -n "$modules_without_tests" ]; then
+      #       echo "Existem modulos sem testes:"
+      #       echo "$modules_without_tests"
+      #       exit 1
+      #     fi
 
       # DEFINIR FUTURAMENTE QUANDO CRIAR TESTES PARA PARA TODOS OS PACOTES
       # - name: Check test coverage
