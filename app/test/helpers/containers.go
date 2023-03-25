@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/ernanilima/gshopping/app/config"
@@ -30,17 +31,17 @@ func GetConfigsForIntegrationTesting(ctx context.Context) *config.Config {
 			wait.ForLog("database system is ready to accept connections").WithOccurrence(2).WithStartupTimeout(5*time.Second)),
 	)
 	if err != nil {
-		panic(err)
+		log.Fatal("Erro ao criar container: ", err)
 	}
 
 	host, err := container.Host(ctx)
 	if err != nil {
-		panic(err)
+		log.Fatal("Erro ao obter host do container: ", err)
 	}
 
 	port, err := container.MappedPort(ctx, "5432")
 	if err != nil {
-		panic(err)
+		log.Fatal("Erro ao obter port do container: ", err)
 	}
 
 	configs := new(config.Config)
