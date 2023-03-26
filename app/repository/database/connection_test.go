@@ -14,7 +14,8 @@ import (
 func TestOpenConnection_Success(t *testing.T) {
 	configs := helpers.GetConfigsForIntegrationTesting(context.Background())
 
-	conn := database.OpenConnection(configs)
+	databaseConfig := &database.DatabaseConfig{Config: configs}
+	conn := databaseConfig.OpenConnection()
 	defer conn.Close()
 
 	// verifica os resultados

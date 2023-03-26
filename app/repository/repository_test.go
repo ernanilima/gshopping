@@ -7,6 +7,7 @@ import (
 	"github.com/ernanilima/gshopping/app/config"
 	"github.com/ernanilima/gshopping/app/repository"
 	brand_repository "github.com/ernanilima/gshopping/app/repository/brand"
+	"github.com/ernanilima/gshopping/app/repository/database"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,7 +19,8 @@ func TestRepository_Should_Return_The_Total_Methods(t *testing.T) {
 
 // Deve retornar os metodos para a interface brand repository
 func TestNewRepository_Should_Return_Methods_For_BrandRepository(t *testing.T) {
-	controller := repository.NewRepository(&config.Config{})
+	databaseConfig := &database.DatabaseConfig{Config: &config.Config{}}
+	controller := repository.NewRepository(databaseConfig)
 
 	brandController, exist := controller.(brand_repository.BrandRepository)
 	typeOf := reflect.TypeOf(brandController)
