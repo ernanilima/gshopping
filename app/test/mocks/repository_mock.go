@@ -13,6 +13,21 @@ import (
         uuid "github.com/google/uuid"
 )
 
+// FindByBarcode mocks base method.
+func (m *MockRepository) FindByBarcode(barcode string) (interface{}, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindByBarcode", barcode)
+        ret0, _ := ret[0].(interface{})
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// FindByBarcode indicates an expected call of FindByBarcode.
+func (mr *MockRepositoryMockRecorder) FindByBarcode(barcode interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByBarcode", reflect.TypeOf((*MockRepository)(nil).FindByBarcode), barcode)
+}
+
 // MockRepository is a mock of Repository interface.
 type MockRepository struct {
         ctrl     *gomock.Controller

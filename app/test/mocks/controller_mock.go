@@ -11,6 +11,18 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
+// FindProductByBarcode mocks base method.
+func (m *MockController) FindProductByBarcode(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "FindProductByBarcode", w, r)
+}
+
+// FindProductByBarcode indicates an expected call of FindProductByBarcode.
+func (mr *MockControllerMockRecorder) FindProductByBarcode(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProductByBarcode", reflect.TypeOf((*MockController)(nil).FindProductByBarcode), w, r)
+}
+
 // MockController is a mock of Controller interface.
 type MockController struct {
         ctrl     *gomock.Controller
