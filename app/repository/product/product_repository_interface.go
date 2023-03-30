@@ -1,6 +1,7 @@
 package product_repository
 
 import (
+	"github.com/ernanilima/gshopping/app/model"
 	"github.com/ernanilima/gshopping/app/repository/database"
 )
 
@@ -13,5 +14,5 @@ type ProductConnection struct {
 }
 
 type ProductRepository interface {
-	FindByBarcode(barcode string) (interface{}, error)
+	FindByBarcode(barcode string) (model.Product, error)
 }

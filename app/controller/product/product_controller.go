@@ -8,7 +8,12 @@ import (
 )
 
 func (repo *productRepository) FindProductByBarcode(w http.ResponseWriter, r *http.Request) {
-	barcode := chi.URLParam(r, "barcode")
-	result, _ := repo.ProductRepository.FindByBarcode(barcode)
-	response.JSON(w, http.StatusOK, result)
+	product, err := repo.ProductRepository.FindByBarcode(chi.URLParam(r, "barcode"))
+	if err != nil {
+		messageError := "Produto não encontrado"
+		response.Error(w, r, http.StatusNotFound, messageError)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, product)
 }
