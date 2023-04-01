@@ -15,7 +15,7 @@ import (
 // Deve retornar o total de metodos existentes
 func TestController_Should_Return_The_Total_Methods(t *testing.T) {
 	totalMethods := reflect.TypeOf((*controller.Controller)(nil)).Elem().NumMethod()
-	assert.Equal(t, 3, totalMethods)
+	assert.Equal(t, 4, totalMethods)
 }
 
 // Deve retornar os metodos para a interface brand controller
@@ -23,18 +23,28 @@ func TestNewController_Should_Return_Methods_For_BrandController(t *testing.T) {
 	databaseConfig := &database.DatabaseConfig{Config: &config.Config{}}
 	controller := controller.NewController(repository.NewRepository(databaseConfig))
 
-	brandController, exist := controller.(brand_controller.BrandController)
-	typeOf := reflect.TypeOf(brandController)
+	result, exist := controller.(brand_controller.BrandController)
 	assert.True(t, exist)
-	assert.NotNil(t, typeOf)
+	brandControllerTypeOf := reflect.TypeOf((*brand_controller.BrandController)(nil)).Elem()
+	controllerTypeOf := reflect.TypeOf(result)
+	assert.NotNil(t, controllerTypeOf)
 
 	nameOfMethods := []string{
 		"FindAllBrands",
-		"FindAllBrandsByDescription",
 		"FindBrandById",
+		"FindAllBrandsByDescription",
 	}
 
-	for index, name := range nameOfMethods {
-		assert.Equal(t, name, typeOf.Method(index).Name)
+	assert.Equal(t, len(nameOfMethods), brandControllerTypeOf.NumMethod())
+	for _, name := range nameOfMethods {
+		// metodos existentes no controlador generico
+		method, exist := controllerTypeOf.MethodByName(name)
+		assert.True(t, exist)
+		assert.Equal(t, name, method.Name)
+
+		// metodos existentes no controlador especifico
+		method, exist = brandControllerTypeOf.MethodByName(name)
+		assert.True(t, exist)
+		assert.Equal(t, name, method.Name)
 	}
 }
