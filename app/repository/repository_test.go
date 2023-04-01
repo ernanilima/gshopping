@@ -14,26 +14,36 @@ import (
 // Deve retornar o total de metodos existentes
 func TestRepository_Should_Return_The_Total_Methods(t *testing.T) {
 	totalMethods := reflect.TypeOf((*repository.Repository)(nil)).Elem().NumMethod()
-	assert.Equal(t, 3, totalMethods)
+	assert.Equal(t, 4, totalMethods)
 }
 
 // Deve retornar os metodos para a interface brand repository
 func TestNewRepository_Should_Return_Methods_For_BrandRepository(t *testing.T) {
 	databaseConfig := &database.DatabaseConfig{Config: &config.Config{}}
-	controller := repository.NewRepository(databaseConfig)
+	repository := repository.NewRepository(databaseConfig)
 
-	brandController, exist := controller.(brand_repository.BrandRepository)
-	typeOf := reflect.TypeOf(brandController)
+	result, exist := repository.(brand_repository.BrandRepository)
 	assert.True(t, exist)
-	assert.NotNil(t, typeOf)
+	brandRepositoryTypeOf := reflect.TypeOf((*brand_repository.BrandRepository)(nil)).Elem()
+	repositoryTypeOf := reflect.TypeOf(result)
+	assert.NotNil(t, repositoryTypeOf)
 
 	nameOfMethods := []string{
 		"FindAll",
-		"FindByDescription",
 		"FindById",
+		"FindByDescription",
 	}
 
-	for index, name := range nameOfMethods {
-		assert.Equal(t, name, typeOf.Method(index).Name)
+	assert.Equal(t, len(nameOfMethods), brandRepositoryTypeOf.NumMethod())
+	for _, name := range nameOfMethods {
+		// metodos existentes no repositorio generico
+		method, exist := repositoryTypeOf.MethodByName(name)
+		assert.True(t, exist)
+		assert.Equal(t, name, method.Name)
+
+		// metodos existentes no repositorio especifico
+		method, exist = brandRepositoryTypeOf.MethodByName(name)
+		assert.True(t, exist)
+		assert.Equal(t, name, method.Name)
 	}
 }
