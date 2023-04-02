@@ -6,6 +6,8 @@ import (
 	product_controller "github.com/ernanilima/gshopping/app/controller/product"
 )
 
+// productRouter recebe o controller e retorna o metodo que deve ser utilizado pela rota
+// correspondente ao URI e ao HTTPMethod para ProductController
 func productRouter(controller product_controller.ProductController) []Router {
 	return []Router{
 		{

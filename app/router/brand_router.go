@@ -6,7 +6,8 @@ import (
 	brand_controller "github.com/ernanilima/gshopping/app/controller/brand"
 )
 
-// brandRouter recebe o controller e retorna a funcao correspondente ao URI e ao HTTPMethod para BrandController
+// brandRouter recebe o controller e retorna o metodo que deve ser utilizado pela rota
+// correspondente ao URI e ao HTTPMethod para BrandController
 func brandRouter(controller brand_controller.BrandController) []Router {
 	return []Router{
 		{
