@@ -8,6 +8,7 @@ import (
 	"github.com/ernanilima/gshopping/app/repository"
 	brand_repository "github.com/ernanilima/gshopping/app/repository/brand"
 	"github.com/ernanilima/gshopping/app/repository/database"
+	product_repository "github.com/ernanilima/gshopping/app/repository/product"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,6 +16,35 @@ import (
 func TestRepository_Should_Return_The_Total_Methods(t *testing.T) {
 	totalMethods := reflect.TypeOf((*repository.Repository)(nil)).Elem().NumMethod()
 	assert.Equal(t, 4, totalMethods)
+}
+
+// Deve retornar os metodos para a interface product repository
+func TestNewRepository_Should_Return_Methods_For_ProductRepository(t *testing.T) {
+	databaseConfig := &database.DatabaseConfig{Config: &config.Config{}}
+	repository := repository.NewRepository(databaseConfig)
+
+	result, exist := repository.(product_repository.ProductRepository)
+	assert.True(t, exist)
+	productRepositoryTypeOf := reflect.TypeOf((*product_repository.ProductRepository)(nil)).Elem()
+	repositoryTypeOf := reflect.TypeOf(result)
+	assert.NotNil(t, repositoryTypeOf)
+
+	nameOfMethods := []string{
+		"FindByBarcode",
+	}
+
+	assert.Equal(t, len(nameOfMethods), productRepositoryTypeOf.NumMethod())
+	for _, name := range nameOfMethods {
+		// metodos existentes no repositorio generico
+		method, exist := repositoryTypeOf.MethodByName(name)
+		assert.True(t, exist)
+		assert.Equal(t, name, method.Name)
+
+		// metodos existentes no repositorio especifico
+		method, exist = productRepositoryTypeOf.MethodByName(name)
+		assert.True(t, exist)
+		assert.Equal(t, name, method.Name)
+	}
 }
 
 // Deve retornar os metodos para a interface brand repository
