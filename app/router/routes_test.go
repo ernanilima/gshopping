@@ -1,6 +1,7 @@
 package router_test
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -21,14 +22,15 @@ func TestStartRoutes_Should_Exist_All_Routes(t *testing.T) {
 	r := router.StartRoutes(controller)
 
 	routes := []http.Handler{
+		getRouteByName(r.Routes(), "/v1/produto/{barcode}").Handlers["GET"],
 		getRouteByName(r.Routes(), "/v1/marca").Handlers["GET"],
 		getRouteByName(r.Routes(), "/v1/marca/{id}").Handlers["GET"],
 		getRouteByName(r.Routes(), "/v1/marca/descricao/{description}").Handlers["GET"],
 	}
 
-	assert.Equal(t, getTotalRoutesByName(r.Routes(), "/v1/marca"), len(routes), "Deve existir 3 rotas")
-	for _, route := range routes {
-		assert.NotNil(t, route, "deve ter o metodo GET")
+	assert.Equal(t, getTotalRoutesByName(r.Routes(), "/v1/"), len(routes), "Deve existir 4 rotas")
+	for index, route := range routes {
+		assert.NotNil(t, route, fmt.Sprintf("deveria existir a rota de index %d", index))
 	}
 }
 
