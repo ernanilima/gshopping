@@ -7,7 +7,9 @@ import (
 	"github.com/go-chi/chi"
 )
 
+// FindProductByBarcode busca um produto pelo codigo de barras
 func (repo *productRepository) FindProductByBarcode(w http.ResponseWriter, r *http.Request) {
+
 	product, err := repo.ProductRepository.FindByBarcode(chi.URLParam(r, "barcode"))
 	if err != nil {
 		messageError := "Produto não encontrado"
