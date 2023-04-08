@@ -6,6 +6,7 @@ import (
 	"github.com/ernanilima/gshopping/app/model"
 )
 
+// FindByBarcode busca um produto pelo codigo de barras
 func (c *ProductConnection) FindByBarcode(barcode string) (model.Product, error) {
 	conn := c.OpenConnection()
 	defer conn.Close()
@@ -24,6 +25,7 @@ func (c *ProductConnection) FindByBarcode(barcode string) (model.Product, error)
 	return product, nil
 }
 
+// notFound registra um produto nao localizado por codigo de barras
 func (c *ProductConnection) notFound(barcode string) {
 	conn := c.OpenConnection()
 	defer conn.Close()
@@ -32,6 +34,6 @@ func (c *ProductConnection) notFound(barcode string) {
 		INSERT INTO notfound (barcode, attempts) VALUES ($1, 1) ON CONFLICT (barcode)
 			DO UPDATE SET attempts = notfound.attempts + 1`, barcode)
 	if err != nil {
-		log.Fatal("erro ao inserir")
+		log.Fatalf("Erro ao inserir o produto com o codigo de barras: %s", barcode)
 	}
 }
