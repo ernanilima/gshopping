@@ -34,6 +34,6 @@ func (c *ProductConnection) notFound(barcode string) {
 		INSERT INTO notfound (barcode, attempts) VALUES ($1, 1) ON CONFLICT (barcode)
 			DO UPDATE SET attempts = notfound.attempts + 1`, barcode)
 	if err != nil {
-		log.Fatalf("Erro ao inserir o produto com o codigo de barras: %s", barcode)
+		log.Fatalf("Erro ao inserir o produto com o codigo de barras: %s | %s", barcode, err)
 	}
 }

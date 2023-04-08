@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/ernanilima/gshopping/app/config"
+	"github.com/ernanilima/gshopping/app/utils"
 
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose"
@@ -47,7 +48,7 @@ func (databaseConfig *DatabaseConfig) UPMigrations() {
 	db := databaseConfig.OpenConnection()
 	defer db.Close()
 
-	if err := goose.Up(db, "./db/migrations"); err != nil {
+	if err := goose.Up(db, utils.GetURIPath()+"db/migrations"); err != nil {
 		log.Fatalf("falha ao aplicar migrations: %s", err)
 	}
 }
