@@ -1,6 +1,10 @@
 package product_repository_test
 
 import (
+	"bytes"
+	"errors"
+	"io"
+	"os"
 	"testing"
 	"time"
 
@@ -68,4 +72,47 @@ func TestFindByBarcode_Should_Return_A_Error_And_Register_The_Search_For_Product
 
 	// verifica os resultados
 	assert.Error(t, err)
+}
+
+// Deve retornar um erro ao nao localizar o produto por codigo de barras e tentar registar a busca
+func TestFindByBarcode_Should_Return_A_Error_When_Not_Locating_The_Product_By_Barcode_And_Trying_To_Register_The_Search(t *testing.T) {
+	// cria um mock para conexao com o banco de dados
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	connector := mocks.NewMockDatabaseConnector(ctrl)
+
+	// cria um mock do banco de dados
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err)
+	defer db.Close()
+	mock.ExpectPing()
+
+	// cria um mock da query executada
+	mock.ExpectQuery("SELECT (.+) FROM product").WillReturnRows(sqlmock.NewRows([]string{})).RowsWillBeClosed()
+	mock.ExpectExec("INSERT INTO notfound").WillReturnError(errors.New("Error"))
+	connector.EXPECT().OpenConnection().Return(db)
+	connector.EXPECT().OpenConnection().Return(db)
+
+	// capturar a saida do metodo
+	output := captureOutput(func() {
+		product_repository.NewProductRepository(connector).FindByBarcode("7891020301")
+	})
+
+	// verifica os resultados
+	assert.Equal(t, "Erro ao inserir o produto com o codigo de barras: 7891020301 | Error", output)
+}
+
+// Capturar a saida da funcao passada por parametro
+func captureOutput(f func()) string {
+	old := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	f()
+
+	w.Close()
+	os.Stdout = old
+	buf := bytes.Buffer{}
+	io.Copy(&buf, r)
+	return buf.String()
 }
