@@ -46,7 +46,7 @@ func TestApp(t *testing.T) {
 		assert.Equal(t, "1906", result.Brand)
 		assert.Equal(t, time.Now().Year(), result.CreatedAt.Year())
 		assert.Equal(t, time.Now().Month(), result.CreatedAt.Month())
-		assert.Equal(t, time.Now().Day(), result.CreatedAt.Day())
+		assert.Equal(t, time.Now().Local().Day(), result.CreatedAt.Local().Day())
 	})
 
 	t.Run("Deve retornar o status 404 ao nao localizar um produto pesquisado por codigo de barras", func(t *testing.T) {

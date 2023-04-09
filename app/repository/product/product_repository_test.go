@@ -43,3 +43,29 @@ func TestFindByBarcode_Should_Return_Product_When_Searching_By_Barcode(t *testin
 	assert.Equal(t, "Marca para teste 1", result.Brand)
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), result.CreatedAt)
 }
+
+// Deve retornar um erro e registar a buscar para produto nao localizado por codigo de barras
+func TestFindByBarcode_Should_Return_A_Error_And_Register_The_Search_For_Product_Not_Found_By_Barcode(t *testing.T) {
+	// cria um mock para conexao com o banco de dados
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	connector := mocks.NewMockDatabaseConnector(ctrl)
+
+	// cria um mock do banco de dados
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err)
+	defer db.Close()
+	mock.ExpectPing()
+
+	// cria um mock da query executada
+	mock.ExpectQuery("SELECT (.+) FROM product").WillReturnRows(sqlmock.NewRows([]string{})).RowsWillBeClosed()
+	mock.ExpectExec("INSERT INTO notfound").WillReturnResult(sqlmock.NewResult(1, 1))
+	connector.EXPECT().OpenConnection().Return(db)
+	connector.EXPECT().OpenConnection().Return(db)
+
+	var _ interface{}
+	_, err = product_repository.NewProductRepository(connector).FindByBarcode("7891020301")
+
+	// verifica os resultados
+	assert.Error(t, err)
+}
