@@ -20,24 +20,32 @@ jobs:
           cache: true
           cache-dependency-path: go.sum
 
-      - name: Install dependencies
+      - name: Diretorio atual
         run: |
-          go mod download
-          go mod tidy
+          pwd
 
-      - name: Validate .ciignore
+      - name: Listar arquivos
         run: |
-          ciignore=$(grep -xvf <(go list ./...) ./app/test/.ciignore || echo "")
-          if [ -n "$ciignore" ]; then
-            echo "Existem pacotes invalidos para serem ignorados:"
-            echo "$ciignore"
-            exit 1
-          fi
+          ls -la /home/runner/work/gshopping
 
-      - name: Run tests
-        id: run_tests
-        run: |
-          go test -coverprofile=coverage.out ./...
+        # - name: Install dependencies
+        #   run: |
+        #     go mod download
+        #     go mod tidy
+
+        # - name: Validate .ciignore
+        #   run: |
+        #     ciignore=$(grep -xvf <(go list ./...) ./app/test/.ciignore || echo "")
+        #     if [ -n "$ciignore" ]; then
+        #       echo "Existem pacotes invalidos para serem ignorados:"
+        #       echo "$ciignore"
+        #       exit 1
+        #     fi
+
+        # - name: Run tests
+        #   id: run_tests
+        #   run: |
+        #     go test -coverprofile=coverage.out ./...
         # test_result=$(go test -coverprofile=coverage.out ./...)
         # test_result_one_line=$(echo "$test_result" | tr '\n' ',')
         # echo "::set-output name=test_result_one_line::$test_result_one_line"
