@@ -13,6 +13,6 @@ func GetURIPath() string {
 		return rootDir
 	}
 	// quando executar em testes
-	index := strings.Index(rootDir, "/gshopping")
+	index := strings.LastIndex(rootDir, "/gshopping")
 	return rootDir[:index+len("/gshopping/")]
 }
