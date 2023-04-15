@@ -26,7 +26,7 @@ jobs:
 
       - name: Listar arquivos
         run: |
-          ls -la /home/runner/work/gshopping
+          ls -la /home/runner/work/gshopping/gshopping
 
         # - name: Install dependencies
         #   run: |
