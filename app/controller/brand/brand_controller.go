@@ -1,14 +1,38 @@
 package brand_controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
+	"github.com/ernanilima/gshopping/app/model"
 	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/ernanilima/gshopping/app/utils/response"
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 )
+
+// FindAllBrands busca uma lista com todas as marcas
+func (repo *brandRepository) InsertBrand(w http.ResponseWriter, r *http.Request) {
+
+	brand := model.Brand{}
+
+	err := json.NewDecoder(r.Body).Decode(&brand)
+	if err != nil {
+		messageError := "Erro no corpo recebido, valor inválido"
+		response.Error(w, r, http.StatusBadRequest, messageError)
+		return
+	}
+
+	brand, err = repo.BrandRepository.Insert(brand)
+	if err != nil {
+		messageError := "Marca não inserida"
+		response.Error(w, r, http.StatusNotFound, messageError)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, brand)
+}
 
 // FindAllBrands busca uma lista com todas as marcas
 func (repo *brandRepository) FindAllBrands(w http.ResponseWriter, r *http.Request) {

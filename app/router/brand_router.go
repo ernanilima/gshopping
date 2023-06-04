@@ -12,6 +12,13 @@ func brandRouter(controller brand_controller.BrandController) []Router {
 	return []Router{
 		{
 			URI:        "/v1/marca",
+			HTTPMethod: http.MethodPost,
+			Function: func(w http.ResponseWriter, r *http.Request) {
+				controller.InsertBrand(w, r)
+			},
+		},
+		{
+			URI:        "/v1/marca",
 			HTTPMethod: http.MethodGet,
 			Function: func(w http.ResponseWriter, r *http.Request) {
 				controller.FindAllBrands(w, r)
