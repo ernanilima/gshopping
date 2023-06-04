@@ -2,11 +2,28 @@ package brand_repository
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/ernanilima/gshopping/app/model"
 	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/google/uuid"
 )
+
+// Insert insere uma marca
+func (c *BrandConnection) Insert(brand model.Brand) (model.Brand, error) {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	brand.ID = uuid.New()
+	brand.CreatedAt = time.Now()
+
+	_, err := conn.Exec("INSERT INTO brand (id, description, created_at) VALUES ($1, $2, $3)", brand.ID, brand.Description, brand.CreatedAt)
+	if err != nil {
+		return model.Brand{}, err
+	}
+
+	return brand, nil
+}
 
 // FindAll busca uma lista paginada de marcas
 func (c *BrandConnection) FindAll(pageable utils.Pageable) utils.Pageable {
