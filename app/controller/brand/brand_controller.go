@@ -9,6 +9,7 @@ import (
 	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/ernanilima/gshopping/app/utils/response"
 	"github.com/go-chi/chi"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
@@ -20,6 +21,13 @@ func (repo *brandRepository) InsertBrand(w http.ResponseWriter, r *http.Request)
 	err := json.NewDecoder(r.Body).Decode(&brand)
 	if err != nil {
 		messageError := "Erro no corpo recebido, valor inválido"
+		response.Error(w, r, http.StatusBadRequest, messageError)
+		return
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(brand); err != nil {
+		messageError := "Erro de validação: Marca inválida"
 		response.Error(w, r, http.StatusBadRequest, messageError)
 		return
 	}
