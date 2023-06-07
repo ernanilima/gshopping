@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [naoexecutar]
   pull_request:
 
 jobs:
