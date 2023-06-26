@@ -45,7 +45,7 @@ func (c *BrandConnection) FindAll(pageable utils.Pageable) utils.Pageable {
 	var brands []model.Brand
 	for results.Next() {
 		var brand model.Brand
-		results.Scan(&pageable.TotalElements, &brand.ID, &brand.Description, &brand.CreatedAt)
+		results.Scan(&pageable.TotalElements, &brand.ID, &brand.Code, &brand.Description, &brand.CreatedAt)
 		brands = append(brands, brand)
 	}
 
@@ -60,7 +60,7 @@ func (c *BrandConnection) FindById(id uuid.UUID) (model.Brand, error) {
 	result := conn.QueryRow("SELECT * FROM brand WHERE id = $1", id)
 
 	var brand model.Brand
-	if err := result.Scan(&brand.ID, &brand.Description, &brand.CreatedAt); err != nil {
+	if err := result.Scan(&brand.ID, &brand.Code, &brand.Description, &brand.CreatedAt); err != nil {
 		return model.Brand{}, err
 	}
 
@@ -88,7 +88,7 @@ func (c *BrandConnection) FindByDescription(description string, pageable utils.P
 	var brands []model.Brand
 	for results.Next() {
 		var brand model.Brand
-		results.Scan(&pageable.TotalElements, &brand.ID, &brand.Description, &brand.CreatedAt)
+		results.Scan(&pageable.TotalElements, &brand.ID, &brand.Code, &brand.Description, &brand.CreatedAt)
 		brands = append(brands, brand)
 	}
 
