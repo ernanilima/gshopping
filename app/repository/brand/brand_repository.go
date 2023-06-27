@@ -31,7 +31,9 @@ func (c *BrandConnection) FindAll(pageable utils.Pageable) utils.Pageable {
 	defer conn.Close()
 
 	query := fmt.Sprintf(`
-		SELECT COUNT(*) OVER(), * FROM brand
+		SELECT COUNT(*) OVER(), COUNT(p.id) as total_products, b.* FROM brand b
+			LEFT JOIN product p ON b.id = p.brand_id
+			GROUP BY b.id
 			ORDER BY %s
 			LIMIT $1 OFFSET $2`, pageable.Sort)
 
@@ -45,7 +47,7 @@ func (c *BrandConnection) FindAll(pageable utils.Pageable) utils.Pageable {
 	var brands []model.Brand
 	for results.Next() {
 		var brand model.Brand
-		results.Scan(&pageable.TotalElements, &brand.ID, &brand.Code, &brand.Description, &brand.CreatedAt)
+		results.Scan(&pageable.TotalElements, &brand.TotalProducts, &brand.ID, &brand.Code, &brand.Description, &brand.CreatedAt)
 		brands = append(brands, brand)
 	}
 
@@ -57,10 +59,14 @@ func (c *BrandConnection) FindById(id uuid.UUID) (model.Brand, error) {
 	conn := c.OpenConnection()
 	defer conn.Close()
 
-	result := conn.QueryRow("SELECT * FROM brand WHERE id = $1", id)
+	result := conn.QueryRow(`
+		SELECT COUNT(p.id), b.* FROM brand b
+			LEFT JOIN product p ON b.id = p.brand_id
+			WHERE b.id = $1
+			GROUP BY b.id`, id)
 
 	var brand model.Brand
-	if err := result.Scan(&brand.ID, &brand.Code, &brand.Description, &brand.CreatedAt); err != nil {
+	if err := result.Scan(&brand.TotalProducts, &brand.ID, &brand.Code, &brand.Description, &brand.CreatedAt); err != nil {
 		return model.Brand{}, err
 	}
 
@@ -73,8 +79,10 @@ func (c *BrandConnection) FindByDescription(description string, pageable utils.P
 	defer conn.Close()
 
 	query := fmt.Sprintf(`
-		SELECT COUNT(*) OVER(), * FROM brand
-			WHERE description ILIKE $1
+		SELECT COUNT(*) OVER(), COUNT(p.id) as total_products, b.* FROM brand b
+			LEFT JOIN product p ON b.id = p.brand_id
+			WHERE b.description ILIKE $1
+			GROUP BY b.id
 			ORDER BY %s
 			LIMIT $2 OFFSET $3`, pageable.Sort)
 
@@ -88,7 +96,7 @@ func (c *BrandConnection) FindByDescription(description string, pageable utils.P
 	var brands []model.Brand
 	for results.Next() {
 		var brand model.Brand
-		results.Scan(&pageable.TotalElements, &brand.ID, &brand.Code, &brand.Description, &brand.CreatedAt)
+		results.Scan(&pageable.TotalElements, &brand.TotalProducts, &brand.ID, &brand.Code, &brand.Description, &brand.CreatedAt)
 		brands = append(brands, brand)
 	}
 
