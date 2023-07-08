@@ -81,7 +81,7 @@ func (c *BrandConnection) FindByDescription(description string, pageable utils.P
 	query := fmt.Sprintf(`
 		SELECT COUNT(*) OVER(), COUNT(p.id) as total_products, b.* FROM brand b
 			LEFT JOIN product p ON b.id = p.brand_id
-			WHERE b.description ILIKE $1
+			WHERE UPPER(unaccent(b.description)) ILIKE $1
 			GROUP BY b.id
 			ORDER BY %s
 			LIMIT $2 OFFSET $3`, pageable.Sort)
