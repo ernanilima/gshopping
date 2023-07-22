@@ -34,8 +34,8 @@ func (repo *brandRepository) InsertBrand(w http.ResponseWriter, r *http.Request)
 
 	brand, err = repo.BrandRepository.Insert(brand)
 	if err != nil {
-		messageError := "Marca não inserida"
-		response.Error(w, r, http.StatusNotFound, messageError)
+		messageError := "Marca já existe"
+		response.Error(w, r, http.StatusBadRequest, messageError)
 		return
 	}
 
