@@ -25,6 +25,22 @@ func (c *BrandConnection) Insert(brand model.Brand) (model.Brand, error) {
 	return brand, nil
 }
 
+// Insert insere uma marca
+func (c *BrandConnection) Edit(brand model.Brand) (model.Brand, error) {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	result, _ := c.FindById(brand.ID)
+	result.Description = brand.Description
+
+	_, err := conn.Exec("UPDATE brand SET description=$2 WHERE id=$1", result.ID, result.Description)
+	if err != nil {
+		return model.Brand{}, err
+	}
+
+	return result, nil
+}
+
 // FindAll busca uma lista paginada de marcas
 func (c *BrandConnection) FindAll(pageable utils.Pageable) utils.Pageable {
 	conn := c.OpenConnection()

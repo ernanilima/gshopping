@@ -17,6 +17,7 @@ type BrandConnection struct {
 
 type BrandRepository interface {
 	Insert(model.Brand) (model.Brand, error)
+	Edit(model.Brand) (model.Brand, error)
 	FindAll(pageable utils.Pageable) utils.Pageable
 	FindById(id uuid.UUID) (model.Brand, error)
 	FindByDescription(description string, pageable utils.Pageable) (utils.Pageable, error)

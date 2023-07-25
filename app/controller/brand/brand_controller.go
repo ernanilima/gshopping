@@ -13,7 +13,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// FindAllBrands busca uma lista com todas as marcas
+// InsertBrand insere uma marca
 func (repo *brandRepository) InsertBrand(w http.ResponseWriter, r *http.Request) {
 
 	brand := model.Brand{}
@@ -33,6 +33,42 @@ func (repo *brandRepository) InsertBrand(w http.ResponseWriter, r *http.Request)
 	}
 
 	brand, err = repo.BrandRepository.Insert(brand)
+	if err != nil {
+		messageError := "Marca já existe"
+		response.Error(w, r, http.StatusBadRequest, messageError)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, brand)
+}
+
+// EditBrand edita uma marca
+func (repo *brandRepository) EditBrand(w http.ResponseWriter, r *http.Request) {
+
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		messageError := "ID inválido"
+		response.Error(w, r, http.StatusUnprocessableEntity, messageError)
+		return
+	}
+
+	brand := model.Brand{}
+	err = json.NewDecoder(r.Body).Decode(&brand)
+	if err != nil {
+		messageError := "Erro no corpo recebido, valor inválido"
+		response.Error(w, r, http.StatusBadRequest, messageError)
+		return
+	}
+
+	brand.ID = id
+	validate := validator.New()
+	if err := validate.Struct(brand); err != nil {
+		messageError := "Erro de validação: Marca inválida"
+		response.Error(w, r, http.StatusBadRequest, messageError)
+		return
+	}
+
+	brand, err = repo.BrandRepository.Edit(brand)
 	if err != nil {
 		messageError := "Marca já existe"
 		response.Error(w, r, http.StatusBadRequest, messageError)

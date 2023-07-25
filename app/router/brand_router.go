@@ -18,6 +18,13 @@ func brandRouter(controller brand_controller.BrandController) []Router {
 			},
 		},
 		{
+			URI:        "/v1/marca/{id}",
+			HTTPMethod: http.MethodPut,
+			Function: func(w http.ResponseWriter, r *http.Request) {
+				controller.EditBrand(w, r)
+			},
+		},
+		{
 			URI:        "/v1/marca",
 			HTTPMethod: http.MethodGet,
 			Function: func(w http.ResponseWriter, r *http.Request) {

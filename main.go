@@ -27,9 +27,7 @@ func main() {
 	// inicia as rotas
 	routes := router.StartRoutes(controller)
 
-	handler := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-	}).Handler(routes)
+	handler := cors.AllowAll().Handler(routes)
 
 	// inicia o banner
 	configs.StartBanner()
