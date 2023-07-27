@@ -39,7 +39,8 @@ func (repo *brandRepository) InsertBrand(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	response.JSON(w, http.StatusOK, brand)
+	messageSuccess := "Marca inserida com sucesso"
+	response.Success(w, http.StatusOK, brand, messageSuccess)
 }
 
 // EditBrand edita uma marca
@@ -75,7 +76,8 @@ func (repo *brandRepository) EditBrand(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JSON(w, http.StatusOK, brand)
+	messageSuccess := "Marca editada com sucesso"
+	response.Success(w, http.StatusOK, brand, messageSuccess)
 }
 
 // FindAllBrands busca uma lista com todas as marcas

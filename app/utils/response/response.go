@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+type StandardSuccess struct {
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
 type StandardError struct {
 	Timestamp string `json:"timestamp"`
 	Status    int    `json:"status"`
@@ -19,6 +24,15 @@ func JSON(w http.ResponseWriter, statusCode int, data interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(data)
+}
+
+// Success eh usado para retornar uma mensagem com os dados inseridos/editados
+func Success(w http.ResponseWriter, statusCode int, data interface{}, message string) {
+	success := StandardSuccess{
+		Message: message,
+		Data:    data,
+	}
+	JSON(w, statusCode, success)
 }
 
 // Error eh usado para retornar um erro personalizado
