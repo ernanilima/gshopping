@@ -25,7 +25,7 @@ func (c *BrandConnection) Insert(brand model.Brand) (model.Brand, error) {
 	return brand, nil
 }
 
-// Insert insere uma marca
+// Edit edita uma marca
 func (c *BrandConnection) Edit(brand model.Brand) (model.Brand, error) {
 	conn := c.OpenConnection()
 	defer conn.Close()
@@ -34,6 +34,23 @@ func (c *BrandConnection) Edit(brand model.Brand) (model.Brand, error) {
 	result.Description = brand.Description
 
 	_, err := conn.Exec("UPDATE brand SET description=$2 WHERE id=$1", result.ID, result.Description)
+	if err != nil {
+		return model.Brand{}, err
+	}
+
+	return result, nil
+}
+
+// Delete deleta uma marca
+func (c *BrandConnection) Delete(id uuid.UUID) (model.Brand, error) {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	result, err := c.FindById(id)
+	if err != nil {
+		return model.Brand{}, err
+	}
+	_, err = conn.Exec("DELETE FROM brand WHERE id=$1", id)
 	if err != nil {
 		return model.Brand{}, err
 	}

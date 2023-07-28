@@ -17,6 +17,7 @@ type brandRepository struct {
 type BrandController interface {
 	InsertBrand(w http.ResponseWriter, r *http.Request)
 	EditBrand(w http.ResponseWriter, r *http.Request)
+	DeleteBrand(w http.ResponseWriter, r *http.Request)
 	FindAllBrands(w http.ResponseWriter, r *http.Request)
 	FindBrandById(w http.ResponseWriter, r *http.Request)
 	FindAllBrandsByDescription(w http.ResponseWriter, r *http.Request)

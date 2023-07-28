@@ -25,6 +25,13 @@ func brandRouter(controller brand_controller.BrandController) []Router {
 			},
 		},
 		{
+			URI:        "/v1/marca/{id}",
+			HTTPMethod: http.MethodDelete,
+			Function: func(w http.ResponseWriter, r *http.Request) {
+				controller.DeleteBrand(w, r)
+			},
+		},
+		{
 			URI:        "/v1/marca",
 			HTTPMethod: http.MethodGet,
 			Function: func(w http.ResponseWriter, r *http.Request) {

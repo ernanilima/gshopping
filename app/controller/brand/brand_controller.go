@@ -40,7 +40,7 @@ func (repo *brandRepository) InsertBrand(w http.ResponseWriter, r *http.Request)
 	}
 
 	messageSuccess := "Marca inserida com sucesso"
-	response.Success(w, http.StatusOK, brand, messageSuccess)
+	response.Success(w, http.StatusCreated, brand, messageSuccess)
 }
 
 // EditBrand edita uma marca
@@ -77,6 +77,27 @@ func (repo *brandRepository) EditBrand(w http.ResponseWriter, r *http.Request) {
 	}
 
 	messageSuccess := "Marca editada com sucesso"
+	response.Success(w, http.StatusOK, brand, messageSuccess)
+}
+
+// DeleteBrand deleta uma marca
+func (repo *brandRepository) DeleteBrand(w http.ResponseWriter, r *http.Request) {
+
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		messageError := "ID inválido"
+		response.Error(w, r, http.StatusUnprocessableEntity, messageError)
+		return
+	}
+
+	brand, err := repo.BrandRepository.Delete(id)
+	if err != nil {
+		messageError := "Marca não encontrada"
+		response.Error(w, r, http.StatusNotFound, messageError)
+		return
+	}
+
+	messageSuccess := "Marca excluída com sucesso"
 	response.Success(w, http.StatusOK, brand, messageSuccess)
 }
 
