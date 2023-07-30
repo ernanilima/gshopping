@@ -11,6 +11,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 // InsertBrand insere uma marca
@@ -92,8 +93,13 @@ func (repo *brandRepository) DeleteBrand(w http.ResponseWriter, r *http.Request)
 
 	brand, err := repo.BrandRepository.Delete(id)
 	if err != nil {
-		messageError := "Marca não encontrada"
-		response.Error(w, r, http.StatusNotFound, messageError)
+		var messageError = "Marca não encontrada"
+		var statusCode = http.StatusNotFound
+		if _, isPQError := err.(*pq.Error); isPQError {
+			messageError = "Marca não pode ser removida"
+			statusCode = http.StatusConflict
+		}
+		response.Error(w, r, statusCode, messageError)
 		return
 	}
 
