@@ -13,6 +13,51 @@ import (
         uuid "github.com/google/uuid"
 )
 
+// Insert mocks base method.
+func (m *MockRepository) Insert(arg0 model.Brand) (model.Brand, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "Insert", arg0)
+        ret0, _ := ret[0].(model.Brand)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// Insert indicates an expected call of Insert.
+func (mr *MockRepositoryMockRecorder) Insert(arg0 interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockRepository)(nil).Insert), arg0)
+}
+
+// Edit mocks base method.
+func (m *MockRepository) Edit(arg0 model.Brand) (model.Brand, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "Edit", arg0)
+        ret0, _ := ret[0].(model.Brand)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// Edit indicates an expected call of Edit.
+func (mr *MockRepositoryMockRecorder) Edit(arg0 interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Edit", reflect.TypeOf((*MockRepository)(nil).Edit), arg0)
+}
+
+// Delete mocks base method.
+func (m *MockRepository) Delete(id uuid.UUID) (model.Brand, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "Delete", id)
+        ret0, _ := ret[0].(model.Brand)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockRepositoryMockRecorder) Delete(id interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockRepository)(nil).Delete), id)
+}
+
 // FindByBarcode mocks base method.
 func (m *MockRepository) FindByBarcode(barcode string) (model.Product, error) {
         m.ctrl.T.Helper()

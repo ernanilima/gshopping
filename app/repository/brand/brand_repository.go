@@ -93,7 +93,7 @@ func (c *BrandConnection) FindById(id uuid.UUID) (model.Brand, error) {
 	defer conn.Close()
 
 	result := conn.QueryRow(`
-		SELECT COUNT(p.id), b.* FROM brand b
+		SELECT COUNT(p.id) as total_products, b.* FROM brand b
 			LEFT JOIN product p ON b.id = p.brand_id
 			WHERE b.id = $1
 			GROUP BY b.id`, id)

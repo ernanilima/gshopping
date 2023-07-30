@@ -16,7 +16,7 @@ import (
 // Deve retornar o total de metodos existentes
 func TestController_Should_Return_The_Total_Methods(t *testing.T) {
 	totalMethods := reflect.TypeOf((*controller.Controller)(nil)).Elem().NumMethod()
-	assert.Equal(t, 4, totalMethods)
+	assert.Equal(t, 7, totalMethods)
 }
 
 // Deve retornar os metodos para a interface product controller
@@ -60,6 +60,9 @@ func TestNewController_Should_Return_Methods_For_BrandController(t *testing.T) {
 	assert.NotNil(t, controllerTypeOf)
 
 	nameOfMethods := []string{
+		"InsertBrand",
+		"EditBrand",
+		"DeleteBrand",
 		"FindAllBrands",
 		"FindBrandById",
 		"FindAllBrandsByDescription",

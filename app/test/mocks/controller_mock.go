@@ -11,6 +11,42 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
+// InsertBrand mocks base method.
+func (m *MockController) InsertBrand(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "InsertBrand", w, r)
+}
+
+// InsertBrand indicates an expected call of InsertBrand.
+func (mr *MockControllerMockRecorder) InsertBrand(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertBrand", reflect.TypeOf((*MockController)(nil).InsertBrand), w, r)
+}
+
+// EditBrand mocks base method.
+func (m *MockController) EditBrand(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "EditBrand", w, r)
+}
+
+// EditBrand indicates an expected call of EditBrand.
+func (mr *MockControllerMockRecorder) EditBrand(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditBrand", reflect.TypeOf((*MockController)(nil).EditBrand), w, r)
+}
+
+// DeleteBrand mocks base method.
+func (m *MockController) DeleteBrand(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "DeleteBrand", w, r)
+}
+
+// DeleteBrand indicates an expected call of DeleteBrand.
+func (mr *MockControllerMockRecorder) DeleteBrand(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteBrand", reflect.TypeOf((*MockController)(nil).DeleteBrand), w, r)
+}
+
 // FindProductByBarcode mocks base method.
 func (m *MockController) FindProductByBarcode(w http.ResponseWriter, r *http.Request) {
         m.ctrl.T.Helper()
