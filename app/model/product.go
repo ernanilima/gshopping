@@ -13,3 +13,9 @@ type Product struct {
 	Brand       string    `json:"brand"`
 	CreatedAt   time.Time `json:"created_at"`
 }
+
+type ProductNotFound struct {
+	ID       int64  `json:"id"`
+	Barcode  string `json:"barcode"`
+	Attempts string `json:"attempts"`
+}

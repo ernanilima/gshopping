@@ -3,6 +3,7 @@ package product_controller
 import (
 	"net/http"
 
+	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/ernanilima/gshopping/app/utils/response"
 	"github.com/go-chi/chi"
 )
@@ -18,4 +19,10 @@ func (repo *productRepository) FindProductByBarcode(w http.ResponseWriter, r *ht
 	}
 
 	response.JSON(w, http.StatusOK, product)
+}
+
+// FindAllProductNotFound busca uma lista com todos os produtos nao encontrados
+func (repo *productRepository) FindAllProductNotFound(w http.ResponseWriter, r *http.Request) {
+	pagination := utils.PaginationFilters(r)
+	response.JSON(w, http.StatusOK, repo.FindAllNotFound(pagination))
 }
