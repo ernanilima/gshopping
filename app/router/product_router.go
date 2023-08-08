@@ -21,7 +21,14 @@ func productRouter(controller product_controller.ProductController) []Router {
 			URI:        "/v1/produto/nao-encontrado",
 			HTTPMethod: http.MethodGet,
 			Function: func(w http.ResponseWriter, r *http.Request) {
-				controller.FindAllProductNotFound(w, r)
+				controller.FindAllProductsNotFound(w, r)
+			},
+		},
+		{
+			URI:        "/v1/produto/nao-encontrado/{barcode}",
+			HTTPMethod: http.MethodGet,
+			Function: func(w http.ResponseWriter, r *http.Request) {
+				controller.FindAllProductsNotFoundByBarcode(w, r)
 			},
 		},
 	}
