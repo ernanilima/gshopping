@@ -7,6 +7,34 @@ import (
 	"github.com/ernanilima/gshopping/app/utils"
 )
 
+// FindAllProducts busca uma lista paginada de produtos
+func (c *ProductConnection) FindAllProducts(pageable utils.Pageable) utils.Pageable {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	query := fmt.Sprintf(`
+		SELECT COUNT(*) OVER(), p.id id, p.barcode barcode, p.description description, b.description brand, p.created_at created_at FROM product p
+			JOIN brand b ON b.id = p.brand_id
+			ORDER BY %s
+			LIMIT $1 OFFSET $2`, pageable.Sort)
+
+	results, err := conn.Query(query, pageable.Size, pageable.Size*pageable.Page)
+
+	if err != nil {
+		return utils.Pageable{}
+	}
+	defer results.Close()
+
+	var products []model.Product
+	for results.Next() {
+		var product model.Product
+		results.Scan(&pageable.TotalElements, &product.ID, &product.Barcode, &product.Description, &product.Brand, &product.CreatedAt)
+		products = append(products, product)
+	}
+
+	return utils.GeneratePaginationRequest(products, pageable)
+}
+
 // FindByBarcode busca um produto pelo codigo de barras
 func (c *ProductConnection) FindByBarcode(barcode string) (model.Product, error) {
 	conn := c.OpenConnection()

@@ -9,6 +9,12 @@ import (
 	"github.com/go-chi/chi"
 )
 
+// FindAllProducts busca uma lista com todos os produtos
+func (repo *productRepository) FindAllProducts(w http.ResponseWriter, r *http.Request) {
+	pagination := utils.PaginationFilters(r)
+	response.JSON(w, http.StatusOK, repo.ProductRepository.FindAllProducts(pagination))
+}
+
 // FindProductByBarcode busca um produto pelo codigo de barras
 func (repo *productRepository) FindProductByBarcode(w http.ResponseWriter, r *http.Request) {
 

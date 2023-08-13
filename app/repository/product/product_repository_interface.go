@@ -15,6 +15,7 @@ type ProductConnection struct {
 }
 
 type ProductRepository interface {
+	FindAllProducts(pageable utils.Pageable) utils.Pageable
 	FindByBarcode(barcode string) (model.Product, error)
 	FindAllNotFound(pageable utils.Pageable) utils.Pageable
 	FindNotFoundByBarcode(barcode string, pageable utils.Pageable) (utils.Pageable, error)

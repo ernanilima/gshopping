@@ -15,6 +15,7 @@ type productRepository struct {
 }
 
 type ProductController interface {
+	FindAllProducts(w http.ResponseWriter, r *http.Request)
 	FindProductByBarcode(w http.ResponseWriter, r *http.Request)
 	FindAllProductsNotFound(w http.ResponseWriter, r *http.Request)
 	FindAllProductsNotFoundByBarcode(w http.ResponseWriter, r *http.Request)
