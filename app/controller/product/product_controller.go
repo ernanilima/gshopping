@@ -11,8 +11,17 @@ import (
 
 // FindAllProducts busca uma lista com todos os produtos
 func (repo *productRepository) FindAllProducts(w http.ResponseWriter, r *http.Request) {
+
+	filter := chi.URLParam(r, "filter")
 	pagination := utils.PaginationFilters(r)
-	response.JSON(w, http.StatusOK, repo.ProductRepository.FindAllProducts(pagination))
+	products, err := repo.ProductRepository.FindAllProducts(filter, pagination)
+	if err != nil || (products.TotalElements == 0 && len(filter) > 0) {
+		messageError := fmt.Sprintf("Nenhum Produto encontrado com '%s'", filter)
+		response.Error(w, r, http.StatusNotFound, messageError)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, products)
 }
 
 // FindProductByBarcode busca um produto pelo codigo de barras
