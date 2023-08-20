@@ -7,6 +7,7 @@ import (
 	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/ernanilima/gshopping/app/utils/response"
 	"github.com/go-chi/chi"
+	"github.com/google/uuid"
 )
 
 // FindAllProducts busca uma lista com todos os produtos
@@ -14,14 +15,34 @@ func (repo *productRepository) FindAllProducts(w http.ResponseWriter, r *http.Re
 
 	filter := chi.URLParam(r, "filter")
 	pagination := utils.PaginationFilters(r)
-	products, err := repo.ProductRepository.FindAllProducts(filter, pagination)
-	if err != nil || (products.TotalElements == 0 && len(filter) > 0) {
+	products := repo.ProductRepository.FindAllProducts(filter, pagination)
+	if products.TotalElements == 0 && len(filter) > 0 {
 		messageError := fmt.Sprintf("Nenhum Produto encontrado com '%s'", filter)
 		response.Error(w, r, http.StatusNotFound, messageError)
 		return
 	}
 
 	response.JSON(w, http.StatusOK, products)
+}
+
+// FindProductById busca um produto pelo ID
+func (repo *productRepository) FindProductById(w http.ResponseWriter, r *http.Request) {
+
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		messageError := "ID inválido"
+		response.Error(w, r, http.StatusUnprocessableEntity, messageError)
+		return
+	}
+
+	brand, err := repo.ProductRepository.FindProductById(id)
+	if err != nil {
+		messageError := "Produto não encontrado"
+		response.Error(w, r, http.StatusNotFound, messageError)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, brand)
 }
 
 // FindProductByBarcode busca um produto pelo codigo de barras

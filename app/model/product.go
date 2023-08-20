@@ -10,7 +10,7 @@ type Product struct {
 	ID          uuid.UUID `json:"id"`
 	Barcode     string    `json:"barcode"`
 	Description string    `json:"description"`
-	Brand       string    `json:"brand"`
+	Brand       Brand     `json:"brand"`
 	CreatedAt   time.Time `json:"created_at"`
 }
 
