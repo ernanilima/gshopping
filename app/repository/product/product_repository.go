@@ -19,6 +19,7 @@ func (c *ProductConnection) FindAllProducts(filter string, pageable utils.Pageab
 				p.id id,
 				p.barcode barcode,
 				p.description description,
+				b.id brand_id,
 				b.description brand,
 				p.created_at created_at
 			FROM product p
@@ -43,7 +44,7 @@ func (c *ProductConnection) FindAllProducts(filter string, pageable utils.Pageab
 	var products []model.Product
 	for results.Next() {
 		var product model.Product
-		results.Scan(&pageable.TotalElements, &product.ID, &product.Barcode, &product.Description, &product.Brand.Description, &product.CreatedAt)
+		results.Scan(&pageable.TotalElements, &product.ID, &product.Barcode, &product.Description, &product.Brand.ID, &product.Brand.Description, &product.CreatedAt)
 		products = append(products, product)
 	}
 
