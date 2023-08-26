@@ -2,6 +2,7 @@ package brand_repository
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/ernanilima/gshopping/app/model"
@@ -9,15 +10,16 @@ import (
 	"github.com/google/uuid"
 )
 
-// Insert insere uma marca
-func (c *BrandConnection) Insert(brand model.Brand) (model.Brand, error) {
+// InsertBrand insere uma marca
+func (c *BrandConnection) InsertBrand(brand model.Brand) (model.Brand, error) {
 	conn := c.OpenConnection()
 	defer conn.Close()
 
 	brand.ID = uuid.New()
 	brand.CreatedAt = time.Now()
 
-	_, err := conn.Exec("INSERT INTO brand (id, description, created_at) VALUES ($1, $2, $3)", brand.ID, brand.Description, brand.CreatedAt)
+	_, err := conn.Exec("INSERT INTO brand (id, description, created_at) VALUES ($1, $2, $3)",
+		brand.ID, strings.TrimSpace(brand.Description), brand.CreatedAt)
 	if err != nil {
 		return model.Brand{}, err
 	}
@@ -25,15 +27,16 @@ func (c *BrandConnection) Insert(brand model.Brand) (model.Brand, error) {
 	return brand, nil
 }
 
-// Edit edita uma marca
-func (c *BrandConnection) Edit(brand model.Brand) (model.Brand, error) {
+// EditBrand edita uma marca
+func (c *BrandConnection) EditBrand(brand model.Brand) (model.Brand, error) {
 	conn := c.OpenConnection()
 	defer conn.Close()
 
-	result, _ := c.FindById(brand.ID)
+	result, _ := c.FindBrandById(brand.ID)
 	result.Description = brand.Description
 
-	_, err := conn.Exec("UPDATE brand SET description=$2 WHERE id=$1", result.ID, result.Description)
+	_, err := conn.Exec("UPDATE brand SET description=$2 WHERE id=$1",
+		result.ID, strings.TrimSpace(result.Description))
 	if err != nil {
 		return model.Brand{}, err
 	}
@@ -41,12 +44,12 @@ func (c *BrandConnection) Edit(brand model.Brand) (model.Brand, error) {
 	return result, nil
 }
 
-// Delete deleta uma marca
-func (c *BrandConnection) Delete(id uuid.UUID) (model.Brand, error) {
+// DeleteBrand deleta uma marca
+func (c *BrandConnection) DeleteBrand(id uuid.UUID) (model.Brand, error) {
 	conn := c.OpenConnection()
 	defer conn.Close()
 
-	result, err := c.FindById(id)
+	result, err := c.FindBrandById(id)
 	if err != nil {
 		return model.Brand{}, err
 	}
@@ -58,8 +61,8 @@ func (c *BrandConnection) Delete(id uuid.UUID) (model.Brand, error) {
 	return result, nil
 }
 
-// FindAll busca uma lista paginada de marcas
-func (c *BrandConnection) FindAll(pageable utils.Pageable) utils.Pageable {
+// FindAllBrands busca uma lista paginada de marcas
+func (c *BrandConnection) FindAllBrands(pageable utils.Pageable) utils.Pageable {
 	conn := c.OpenConnection()
 	defer conn.Close()
 
@@ -87,8 +90,8 @@ func (c *BrandConnection) FindAll(pageable utils.Pageable) utils.Pageable {
 	return utils.GeneratePaginationRequest(brands, pageable)
 }
 
-// FindById busca uma marca pelo ID
-func (c *BrandConnection) FindById(id uuid.UUID) (model.Brand, error) {
+// FindBrandById busca uma marca pelo ID
+func (c *BrandConnection) FindBrandById(id uuid.UUID) (model.Brand, error) {
 	conn := c.OpenConnection()
 	defer conn.Close()
 
@@ -106,8 +109,8 @@ func (c *BrandConnection) FindById(id uuid.UUID) (model.Brand, error) {
 	return brand, nil
 }
 
-// FindByDescription busca uma lista paginada de marcas pela %descricao%
-func (c *BrandConnection) FindByDescription(description string, pageable utils.Pageable) (utils.Pageable, error) {
+// FindAllBrandsByDescription busca uma lista paginada de marcas pela %descricao%
+func (c *BrandConnection) FindAllBrandsByDescription(description string, pageable utils.Pageable) (utils.Pageable, error) {
 	conn := c.OpenConnection()
 	defer conn.Close()
 

@@ -16,10 +16,10 @@ type BrandConnection struct {
 }
 
 type BrandRepository interface {
-	Insert(model.Brand) (model.Brand, error)
-	Edit(model.Brand) (model.Brand, error)
-	Delete(id uuid.UUID) (model.Brand, error)
-	FindAll(pageable utils.Pageable) utils.Pageable
-	FindById(id uuid.UUID) (model.Brand, error)
-	FindByDescription(description string, pageable utils.Pageable) (utils.Pageable, error)
+	InsertBrand(model.Brand) (model.Brand, error)
+	EditBrand(model.Brand) (model.Brand, error)
+	DeleteBrand(id uuid.UUID) (model.Brand, error)
+	FindAllBrands(pageable utils.Pageable) utils.Pageable
+	FindBrandById(id uuid.UUID) (model.Brand, error)
+	FindAllBrandsByDescription(description string, pageable utils.Pageable) (utils.Pageable, error)
 }

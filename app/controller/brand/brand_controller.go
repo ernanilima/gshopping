@@ -33,7 +33,7 @@ func (repo *brandRepository) InsertBrand(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	brand, err = repo.BrandRepository.Insert(brand)
+	brand, err = repo.BrandRepository.InsertBrand(brand)
 	if err != nil {
 		messageError := "Marca já existe"
 		response.Error(w, r, http.StatusBadRequest, messageError)
@@ -70,7 +70,7 @@ func (repo *brandRepository) EditBrand(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	brand, err = repo.BrandRepository.Edit(brand)
+	brand, err = repo.BrandRepository.EditBrand(brand)
 	if err != nil {
 		messageError := "Marca já existe"
 		response.Error(w, r, http.StatusBadRequest, messageError)
@@ -91,7 +91,7 @@ func (repo *brandRepository) DeleteBrand(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	brand, err := repo.BrandRepository.Delete(id)
+	brand, err := repo.BrandRepository.DeleteBrand(id)
 	if err != nil {
 		var messageError = "Marca não encontrada"
 		var statusCode = http.StatusNotFound
@@ -110,7 +110,7 @@ func (repo *brandRepository) DeleteBrand(w http.ResponseWriter, r *http.Request)
 // FindAllBrands busca uma lista com todas as marcas
 func (repo *brandRepository) FindAllBrands(w http.ResponseWriter, r *http.Request) {
 	pagination := utils.PaginationFilters(r)
-	response.JSON(w, http.StatusOK, repo.BrandRepository.FindAll(pagination))
+	response.JSON(w, http.StatusOK, repo.BrandRepository.FindAllBrands(pagination))
 }
 
 // FindBrandById busca uma marca pelo ID
@@ -123,7 +123,7 @@ func (repo *brandRepository) FindBrandById(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	brand, err := repo.BrandRepository.FindById(id)
+	brand, err := repo.BrandRepository.FindBrandById(id)
 	if err != nil {
 		messageError := "Marca não encontrada"
 		response.Error(w, r, http.StatusNotFound, messageError)
@@ -138,7 +138,7 @@ func (repo *brandRepository) FindAllBrandsByDescription(w http.ResponseWriter, r
 
 	description := chi.URLParam(r, "description")
 	pagination := utils.PaginationFilters(r)
-	brands, err := repo.BrandRepository.FindByDescription(description, pagination)
+	brands, err := repo.BrandRepository.FindAllBrandsByDescription(description, pagination)
 	if err != nil || brands.TotalElements == 0 {
 		messageError := fmt.Sprintf("Nenhuma Marca encontrada com '%s'", description)
 		response.Error(w, r, http.StatusNotFound, messageError)

@@ -16,9 +16,11 @@ type ProductConnection struct {
 }
 
 type ProductRepository interface {
+	InsertProduct(model.Product) (model.Product, error)
+	EditProduct(model.Product) (model.Product, error)
 	FindAllProducts(filter string, pageable utils.Pageable) utils.Pageable
 	FindProductById(id uuid.UUID) (model.Product, error)
-	FindByBarcode(barcode string) (model.Product, error)
-	FindAllNotFound(pageable utils.Pageable) utils.Pageable
-	FindNotFoundByBarcode(barcode string, pageable utils.Pageable) (utils.Pageable, error)
+	FindProductByBarcode(barcode string) (model.Product, error)
+	FindAllProductsNotFound(pageable utils.Pageable) utils.Pageable
+	FindAllProductsNotFoundByBarcode(barcode string, pageable utils.Pageable) (utils.Pageable, error)
 }

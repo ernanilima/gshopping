@@ -15,6 +15,8 @@ type productRepository struct {
 }
 
 type ProductController interface {
+	InsertProduct(w http.ResponseWriter, r *http.Request)
+	EditProduct(w http.ResponseWriter, r *http.Request)
 	FindAllProducts(w http.ResponseWriter, r *http.Request)
 	FindProductById(w http.ResponseWriter, r *http.Request)
 	FindProductByBarcode(w http.ResponseWriter, r *http.Request)

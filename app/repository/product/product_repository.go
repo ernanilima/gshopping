@@ -3,11 +3,53 @@ package product_repository
 import (
 	"fmt"
 	"regexp"
+	"strings"
+	"time"
 
 	"github.com/ernanilima/gshopping/app/model"
 	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/google/uuid"
 )
+
+// InsertProduct insere um produto
+func (c *ProductConnection) InsertProduct(product model.Product) (model.Product, error) {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	product.ID = uuid.New()
+	product.CreatedAt = time.Now()
+
+	_, err := conn.Exec("INSERT INTO product (id, barcode, description, brand_id, created_at) VALUES ($1, $2, $3, $4, $5)",
+		product.ID, strings.TrimSpace(product.Barcode), strings.TrimSpace(product.Description), product.Brand.ID, product.CreatedAt)
+	if err != nil {
+		return model.Product{}, err
+	}
+
+	c.deleteProductNotFound(product.Barcode)
+
+	return product, nil
+}
+
+// EditProduct edita um produto
+func (c *ProductConnection) EditProduct(product model.Product) (model.Product, error) {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	result, _ := c.FindProductById(product.ID)
+	result.Barcode = product.Barcode
+	result.Description = product.Description
+	result.Brand.ID = product.Brand.ID
+
+	_, err := conn.Exec("UPDATE product SET barcode=$2, description=$3, brand_id=$4 WHERE id=$1",
+		result.ID, strings.TrimSpace(result.Barcode), strings.TrimSpace(result.Description), result.Brand.ID)
+	if err != nil {
+		return model.Product{}, err
+	}
+
+	c.deleteProductNotFound(result.Barcode)
+
+	return result, nil
+}
 
 // FindAllProducts busca uma lista paginada de produtos com base em um filtro opcional
 func (c *ProductConnection) FindAllProducts(filter string, pageable utils.Pageable) utils.Pageable {
@@ -76,8 +118,8 @@ func (c *ProductConnection) FindProductById(id uuid.UUID) (model.Product, error)
 	return product, nil
 }
 
-// FindByBarcode busca um produto pelo codigo de barras
-func (c *ProductConnection) FindByBarcode(barcode string) (model.Product, error) {
+// FindProductByBarcode busca um produto pelo codigo de barras
+func (c *ProductConnection) FindProductByBarcode(barcode string) (model.Product, error) {
 	conn := c.OpenConnection()
 	defer conn.Close()
 
@@ -97,7 +139,7 @@ func (c *ProductConnection) FindByBarcode(barcode string) (model.Product, error)
 	var product model.Product
 	if err := result.Scan(&product.ID, &product.Barcode, &product.Description, &product.Brand.Description, &product.CreatedAt); err != nil {
 		if len(barcode) > 0 {
-			c.notFound(barcode)
+			c.insertProductNotFound(barcode)
 		}
 		print("FindByBarcode - ", err.Error())
 		return model.Product{}, err
@@ -106,21 +148,8 @@ func (c *ProductConnection) FindByBarcode(barcode string) (model.Product, error)
 	return product, nil
 }
 
-// notFound registra um produto nao localizado por codigo de barras
-func (c *ProductConnection) notFound(barcode string) {
-	conn := c.OpenConnection()
-	defer conn.Close()
-
-	_, err := conn.Exec(`
-		INSERT INTO notfound (barcode, attempts) VALUES ($1, 1) ON CONFLICT (barcode)
-			DO UPDATE SET attempts = notfound.attempts + 1`, barcode)
-	if err != nil {
-		fmt.Printf("Erro ao inserir o produto com o codigo de barras: %s | %s", barcode, err)
-	}
-}
-
-// FindAllNotFound busca uma lista com todos os produtos nao encontrados
-func (c *ProductConnection) FindAllNotFound(pageable utils.Pageable) utils.Pageable {
+// FindAllProductsNotFound busca uma lista com todos os produtos nao encontrados
+func (c *ProductConnection) FindAllProductsNotFound(pageable utils.Pageable) utils.Pageable {
 	conn := c.OpenConnection()
 	defer conn.Close()
 
@@ -147,7 +176,8 @@ func (c *ProductConnection) FindAllNotFound(pageable utils.Pageable) utils.Pagea
 	return utils.GeneratePaginationRequest(productsNotFound, pageable)
 }
 
-func (c *ProductConnection) FindNotFoundByBarcode(barcode string, pageable utils.Pageable) (utils.Pageable, error) {
+// FindAllProductsNotFoundByBarcode busca uma lista com todos os produtos nao encontrados pelo codigo de barras
+func (c *ProductConnection) FindAllProductsNotFoundByBarcode(barcode string, pageable utils.Pageable) (utils.Pageable, error) {
 	conn := c.OpenConnection()
 	defer conn.Close()
 
@@ -173,4 +203,29 @@ func (c *ProductConnection) FindNotFoundByBarcode(barcode string, pageable utils
 	}
 
 	return utils.GeneratePaginationRequest(productsNotFound, pageable), nil
+}
+
+// insertProductNotFound registra um produto nao localizado por codigo de barras
+func (c *ProductConnection) insertProductNotFound(barcode string) {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	_, err := conn.Exec(`
+		INSERT INTO notfound (barcode, attempts) VALUES ($1, 1) ON CONFLICT (barcode)
+			DO UPDATE SET attempts = notfound.attempts + 1`, barcode)
+	if err != nil {
+		fmt.Printf("Erro ao inserir ProductNotFound com o codigo de barras: %s | %s", barcode, err)
+	}
+}
+
+// deleteProductNotFound deleta um produto nao localizado por codigo de barras
+func (c *ProductConnection) deleteProductNotFound(barcode string) {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	_, err := conn.Exec(`
+		DELETE FROM notfound WHERE barcode=$1`, barcode)
+	if err != nil {
+		fmt.Printf("Erro ao deletar ProductNotFound com o codigo de barras: %s | %s", barcode, err)
+	}
 }

@@ -12,6 +12,20 @@ func productRouter(controller product_controller.ProductController) []Router {
 	return []Router{
 		{
 			URI:        "/v1/produto",
+			HTTPMethod: http.MethodPost,
+			Function: func(w http.ResponseWriter, r *http.Request) {
+				controller.InsertProduct(w, r)
+			},
+		},
+		{
+			URI:        "/v1/produto/{id}",
+			HTTPMethod: http.MethodPut,
+			Function: func(w http.ResponseWriter, r *http.Request) {
+				controller.EditProduct(w, r)
+			},
+		},
+		{
+			URI:        "/v1/produto",
 			HTTPMethod: http.MethodGet,
 			Function: func(w http.ResponseWriter, r *http.Request) {
 				controller.FindAllProducts(w, r)
