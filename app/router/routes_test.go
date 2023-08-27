@@ -22,25 +22,33 @@ func TestStartRoutes_Should_Exist_All_Routes(t *testing.T) {
 	r := router.StartRoutes(controller)
 
 	routes := []http.Handler{
-		getRouteByName(r.Routes(), "/v1/produto/{barcode}").Handlers["GET"],
 		getRouteByName(r.Routes(), "/v1/marca").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/marca").Handlers["POST"],
 		getRouteByName(r.Routes(), "/v1/marca/{id}").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/marca/{id}").Handlers["PUT"],
+		getRouteByName(r.Routes(), "/v1/marca/{id}").Handlers["DELETE"],
 		getRouteByName(r.Routes(), "/v1/marca/descricao/{description}").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/produto").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/produto").Handlers["POST"],
+		getRouteByName(r.Routes(), "/v1/produto/{id}").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/produto/{id}").Handlers["PUT"],
+		getRouteByName(r.Routes(), "/v1/produto/pesquisa/{filter}").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/produto/codigo-barras/{barcode}").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/produto/nao-encontrado").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/produto/nao-encontrado/{barcode}").Handlers["GET"],
 	}
 
-	assert.Equal(t, getTotalRoutesByName(r.Routes(), "/v1/"), len(routes), "Deve existir 4 rotas")
+	assert.Equal(t, getTotalRoutes(r.Routes()), len(routes), "Total de rotas incompativeis")
 	for index, route := range routes {
 		assert.NotNil(t, route, fmt.Sprintf("deveria existir a rota de index %d", index))
 	}
 }
 
-func getTotalRoutesByName(routes []chi.Route, route string) int {
+func getTotalRoutes(routes []chi.Route) int {
 	var total = 0
 
 	for _, r := range routes {
-		if strings.Contains(r.Pattern, route) {
-			total++
-		}
+		total += len(r.Handlers)
 	}
 
 	return total

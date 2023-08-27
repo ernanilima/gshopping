@@ -20,10 +20,10 @@ func TestRouteFindProductByBarcode_Should_Access_The_Route_And_Return_Status_Cod
 
 	r := router.StartRoutes(controller)
 
-	req := httptest.NewRequest("GET", "/v1/produto/789102030", nil)
+	req := httptest.NewRequest("GET", "/v1/produto/codigo-barras/789102030", nil)
 	res := httptest.NewRecorder()
 
-	routeProduto := getRouteByName(r.Routes(), "/v1/produto/{barcode}")
+	routeProduto := getRouteByName(r.Routes(), "/v1/produto/codigo-barras/{barcode}")
 	routeProduto.Handlers[req.Method].ServeHTTP(res, req)
 
 	assert.Equal(t, http.StatusOK, res.Code, "deveria retornar o status code 200")

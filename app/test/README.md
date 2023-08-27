@@ -6,4 +6,5 @@ O arquivo `.ciignore` possui o nome dos módulos que devem ser ignorados, para s
 
 Exibir funções mocar interface
 
+`mockgen -source=app/controller/controller.go`
 `mockgen -source=app/repository/repository.go`

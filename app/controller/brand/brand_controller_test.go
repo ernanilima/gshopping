@@ -38,7 +38,7 @@ func TestFindAllBrands_Should_Return_Status_200_To_Fetch_All_Brands(t *testing.T
 	defer ctrl.Finish()
 	repository := mocks.NewMockRepository(ctrl)
 	controller := controller.NewController(repository)
-	repository.EXPECT().FindAll(gomock.Any()).Return(utils.Pageable{
+	repository.EXPECT().FindAllBrands(gomock.Any()).Return(utils.Pageable{
 		Content:          brands,
 		TotalPages:       0,           // total de paginas
 		TotalElements:    len(brands), // total de entidades localizadas
@@ -79,7 +79,7 @@ func TestFindBrandById_Should_Return_Status_200_To_Fetch_A_Brand_By_ID(t *testin
 	defer ctrl.Finish()
 	repository := mocks.NewMockRepository(ctrl)
 	controller := controller.NewController(repository)
-	repository.EXPECT().FindById(gomock.Any()).Return(brands[0], nil)
+	repository.EXPECT().FindBrandById(gomock.Any()).Return(brands[0], nil)
 
 	r := router.StartRoutes(controller)
 
@@ -141,7 +141,7 @@ func TestFindBrandById_Should_Return_Status_404_To_Fetch_A_Brand_By_ID_When_No_B
 	defer ctrl.Finish()
 	repository := mocks.NewMockRepository(ctrl)
 	controller := controller.NewController(repository)
-	repository.EXPECT().FindById(gomock.Any()).Return(model.Brand{}, errors.New("Error"))
+	repository.EXPECT().FindBrandById(gomock.Any()).Return(model.Brand{}, errors.New("Error"))
 
 	r := router.StartRoutes(controller)
 
@@ -174,7 +174,7 @@ func TestFindAllBrandsByDescription_Should_Return_Status_200_To_Fetch_Brands_By_
 	defer ctrl.Finish()
 	repository := mocks.NewMockRepository(ctrl)
 	controller := controller.NewController(repository)
-	repository.EXPECT().FindByDescription(gomock.Any(), gomock.Any()).Return(utils.Pageable{
+	repository.EXPECT().FindAllBrandsByDescription(gomock.Any(), gomock.Any()).Return(utils.Pageable{
 		Content:          brands,
 		TotalPages:       0,           // total de paginas
 		TotalElements:    len(brands), // total de entidades localizadas
@@ -215,7 +215,7 @@ func TestFindAllBrandsByDescription_Should_Return_Status_404_To_Fetch_Brands_By_
 	defer ctrl.Finish()
 	repository := mocks.NewMockRepository(ctrl)
 	controller := controller.NewController(repository)
-	repository.EXPECT().FindByDescription(gomock.Any(), gomock.Any()).Return(utils.Pageable{}, errors.New("Error"))
+	repository.EXPECT().FindAllBrandsByDescription(gomock.Any(), gomock.Any()).Return(utils.Pageable{}, errors.New("Error"))
 
 	r := router.StartRoutes(controller)
 
@@ -248,7 +248,7 @@ func TestFindAllBrandsByDescription_Should_Return_Status_404_To_Fetch_Brands_By_
 	defer ctrl.Finish()
 	repository := mocks.NewMockRepository(ctrl)
 	controller := controller.NewController(repository)
-	repository.EXPECT().FindByDescription(gomock.Any(), gomock.Any()).Return(utils.Pageable{}, nil)
+	repository.EXPECT().FindAllBrandsByDescription(gomock.Any(), gomock.Any()).Return(utils.Pageable{}, nil)
 
 	r := router.StartRoutes(controller)
 

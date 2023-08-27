@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/ernanilima/gshopping/app/model"
 	product_repository "github.com/ernanilima/gshopping/app/repository/product"
 	"github.com/ernanilima/gshopping/app/test/mocks"
 	"github.com/google/uuid"
@@ -30,21 +31,21 @@ func TestFindByBarcode_Should_Return_Product_When_Searching_By_Barcode(t *testin
 	mock.ExpectPing()
 
 	// cria um mock dos dados que deveram ser retornados
-	rows := sqlmock.NewRows([]string{"id", "barcode", "description", "brand", "created_at"}).
+	rows := sqlmock.NewRows([]string{"id", "barcode", "description", "brand_description", "created_at"}).
 		AddRow(uuid.New(), "7891020301", "Produto para teste 1", "Marca para teste 1", time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC))
 
 	// cria um mock da query executada
 	mock.ExpectQuery("SELECT (.+) FROM product").WillReturnRows(rows).RowsWillBeClosed()
 	connector.EXPECT().OpenConnection().Return(db)
 
-	result, err := product_repository.NewProductRepository(connector).FindByBarcode("7891020301")
+	result, err := product_repository.NewProductRepository(connector).FindProductByBarcode("7891020301")
 	assert.NoError(t, err)
 
 	// verifica os resultados
 	assert.NotNil(t, result.ID)
 	assert.Equal(t, "7891020301", result.Barcode)
 	assert.Equal(t, "Produto para teste 1", result.Description)
-	assert.Equal(t, "Marca para teste 1", result.Brand)
+	assert.Equal(t, model.Brand{Description: "Marca para teste 1"}, result.Brand)
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), result.CreatedAt)
 }
 
@@ -68,7 +69,7 @@ func TestFindByBarcode_Should_Return_A_Error_And_Register_The_Search_For_Product
 	connector.EXPECT().OpenConnection().Return(db)
 
 	var _ interface{}
-	_, err = product_repository.NewProductRepository(connector).FindByBarcode("7891020301")
+	_, err = product_repository.NewProductRepository(connector).FindProductByBarcode("7891020301")
 
 	// verifica os resultados
 	assert.Error(t, err)
@@ -95,11 +96,11 @@ func TestFindByBarcode_Should_Return_A_Error_When_Not_Locating_The_Product_By_Ba
 
 	// capturar a saida do metodo
 	output := captureOutput(func() {
-		product_repository.NewProductRepository(connector).FindByBarcode("7891020301")
+		product_repository.NewProductRepository(connector).FindProductByBarcode("7891020301")
 	})
 
 	// verifica os resultados
-	assert.Equal(t, "Erro ao inserir o produto com o codigo de barras: 7891020301 | Error", output)
+	assert.Equal(t, "Erro ao inserir ProductNotFound com o codigo de barras: 7891020301 | Error", output)
 }
 
 // Capturar a saida da funcao passada por parametro

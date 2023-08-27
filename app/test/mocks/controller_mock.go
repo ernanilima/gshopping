@@ -11,54 +11,6 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-// InsertBrand mocks base method.
-func (m *MockController) InsertBrand(w http.ResponseWriter, r *http.Request) {
-        m.ctrl.T.Helper()
-        m.ctrl.Call(m, "InsertBrand", w, r)
-}
-
-// InsertBrand indicates an expected call of InsertBrand.
-func (mr *MockControllerMockRecorder) InsertBrand(w, r interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertBrand", reflect.TypeOf((*MockController)(nil).InsertBrand), w, r)
-}
-
-// EditBrand mocks base method.
-func (m *MockController) EditBrand(w http.ResponseWriter, r *http.Request) {
-        m.ctrl.T.Helper()
-        m.ctrl.Call(m, "EditBrand", w, r)
-}
-
-// EditBrand indicates an expected call of EditBrand.
-func (mr *MockControllerMockRecorder) EditBrand(w, r interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditBrand", reflect.TypeOf((*MockController)(nil).EditBrand), w, r)
-}
-
-// DeleteBrand mocks base method.
-func (m *MockController) DeleteBrand(w http.ResponseWriter, r *http.Request) {
-        m.ctrl.T.Helper()
-        m.ctrl.Call(m, "DeleteBrand", w, r)
-}
-
-// DeleteBrand indicates an expected call of DeleteBrand.
-func (mr *MockControllerMockRecorder) DeleteBrand(w, r interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteBrand", reflect.TypeOf((*MockController)(nil).DeleteBrand), w, r)
-}
-
-// FindProductByBarcode mocks base method.
-func (m *MockController) FindProductByBarcode(w http.ResponseWriter, r *http.Request) {
-        m.ctrl.T.Helper()
-        m.ctrl.Call(m, "FindProductByBarcode", w, r)
-}
-
-// FindProductByBarcode indicates an expected call of FindProductByBarcode.
-func (mr *MockControllerMockRecorder) FindProductByBarcode(w, r interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProductByBarcode", reflect.TypeOf((*MockController)(nil).FindProductByBarcode), w, r)
-}
-
 // MockController is a mock of Controller interface.
 type MockController struct {
         ctrl     *gomock.Controller
@@ -80,6 +32,42 @@ func NewMockController(ctrl *gomock.Controller) *MockController {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockController) EXPECT() *MockControllerMockRecorder {
         return m.recorder
+}
+
+// DeleteBrand mocks base method.
+func (m *MockController) DeleteBrand(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "DeleteBrand", w, r)
+}
+
+// DeleteBrand indicates an expected call of DeleteBrand.
+func (mr *MockControllerMockRecorder) DeleteBrand(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteBrand", reflect.TypeOf((*MockController)(nil).DeleteBrand), w, r)
+}
+
+// EditBrand mocks base method.
+func (m *MockController) EditBrand(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "EditBrand", w, r)
+}
+
+// EditBrand indicates an expected call of EditBrand.
+func (mr *MockControllerMockRecorder) EditBrand(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditBrand", reflect.TypeOf((*MockController)(nil).EditBrand), w, r)
+}
+
+// EditProduct mocks base method.
+func (m *MockController) EditProduct(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "EditProduct", w, r)
+}
+
+// EditProduct indicates an expected call of EditProduct.
+func (mr *MockControllerMockRecorder) EditProduct(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditProduct", reflect.TypeOf((*MockController)(nil).EditProduct), w, r)
 }
 
 // FindAllBrands mocks base method.
@@ -106,6 +94,42 @@ func (mr *MockControllerMockRecorder) FindAllBrandsByDescription(w, r interface{
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllBrandsByDescription", reflect.TypeOf((*MockController)(nil).FindAllBrandsByDescription), w, r)
 }
 
+// FindAllProducts mocks base method.
+func (m *MockController) FindAllProducts(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "FindAllProducts", w, r)
+}
+
+// FindAllProducts indicates an expected call of FindAllProducts.
+func (mr *MockControllerMockRecorder) FindAllProducts(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllProducts", reflect.TypeOf((*MockController)(nil).FindAllProducts), w, r)
+}
+
+// FindAllProductsNotFound mocks base method.
+func (m *MockController) FindAllProductsNotFound(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "FindAllProductsNotFound", w, r)
+}
+
+// FindAllProductsNotFound indicates an expected call of FindAllProductsNotFound.
+func (mr *MockControllerMockRecorder) FindAllProductsNotFound(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllProductsNotFound", reflect.TypeOf((*MockController)(nil).FindAllProductsNotFound), w, r)
+}
+
+// FindAllProductsNotFoundByBarcode mocks base method.
+func (m *MockController) FindAllProductsNotFoundByBarcode(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "FindAllProductsNotFoundByBarcode", w, r)
+}
+
+// FindAllProductsNotFoundByBarcode indicates an expected call of FindAllProductsNotFoundByBarcode.
+func (mr *MockControllerMockRecorder) FindAllProductsNotFoundByBarcode(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllProductsNotFoundByBarcode", reflect.TypeOf((*MockController)(nil).FindAllProductsNotFoundByBarcode), w, r)
+}
+
 // FindBrandById mocks base method.
 func (m *MockController) FindBrandById(w http.ResponseWriter, r *http.Request) {
         m.ctrl.T.Helper()
@@ -116,4 +140,52 @@ func (m *MockController) FindBrandById(w http.ResponseWriter, r *http.Request) {
 func (mr *MockControllerMockRecorder) FindBrandById(w, r interface{}) *gomock.Call {
         mr.mock.ctrl.T.Helper()
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindBrandById", reflect.TypeOf((*MockController)(nil).FindBrandById), w, r)
+}
+
+// FindProductByBarcode mocks base method.
+func (m *MockController) FindProductByBarcode(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "FindProductByBarcode", w, r)
+}
+
+// FindProductByBarcode indicates an expected call of FindProductByBarcode.
+func (mr *MockControllerMockRecorder) FindProductByBarcode(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProductByBarcode", reflect.TypeOf((*MockController)(nil).FindProductByBarcode), w, r)
+}
+
+// FindProductById mocks base method.
+func (m *MockController) FindProductById(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "FindProductById", w, r)
+}
+
+// FindProductById indicates an expected call of FindProductById.
+func (mr *MockControllerMockRecorder) FindProductById(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProductById", reflect.TypeOf((*MockController)(nil).FindProductById), w, r)
+}
+
+// InsertBrand mocks base method.
+func (m *MockController) InsertBrand(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "InsertBrand", w, r)
+}
+
+// InsertBrand indicates an expected call of InsertBrand.
+func (mr *MockControllerMockRecorder) InsertBrand(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertBrand", reflect.TypeOf((*MockController)(nil).InsertBrand), w, r)
+}
+
+// InsertProduct mocks base method.
+func (m *MockController) InsertProduct(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "InsertProduct", w, r)
+}
+
+// InsertProduct indicates an expected call of InsertProduct.
+func (mr *MockControllerMockRecorder) InsertProduct(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertProduct", reflect.TypeOf((*MockController)(nil).InsertProduct), w, r)
 }

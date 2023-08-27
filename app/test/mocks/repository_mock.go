@@ -13,66 +13,6 @@ import (
         uuid "github.com/google/uuid"
 )
 
-// Insert mocks base method.
-func (m *MockRepository) Insert(arg0 model.Brand) (model.Brand, error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Insert", arg0)
-        ret0, _ := ret[0].(model.Brand)
-        ret1, _ := ret[1].(error)
-        return ret0, ret1
-}
-
-// Insert indicates an expected call of Insert.
-func (mr *MockRepositoryMockRecorder) Insert(arg0 interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockRepository)(nil).Insert), arg0)
-}
-
-// Edit mocks base method.
-func (m *MockRepository) Edit(arg0 model.Brand) (model.Brand, error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Edit", arg0)
-        ret0, _ := ret[0].(model.Brand)
-        ret1, _ := ret[1].(error)
-        return ret0, ret1
-}
-
-// Edit indicates an expected call of Edit.
-func (mr *MockRepositoryMockRecorder) Edit(arg0 interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Edit", reflect.TypeOf((*MockRepository)(nil).Edit), arg0)
-}
-
-// Delete mocks base method.
-func (m *MockRepository) Delete(id uuid.UUID) (model.Brand, error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Delete", id)
-        ret0, _ := ret[0].(model.Brand)
-        ret1, _ := ret[1].(error)
-        return ret0, ret1
-}
-
-// Delete indicates an expected call of Delete.
-func (mr *MockRepositoryMockRecorder) Delete(id interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockRepository)(nil).Delete), id)
-}
-
-// FindByBarcode mocks base method.
-func (m *MockRepository) FindByBarcode(barcode string) (model.Product, error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "FindByBarcode", barcode)
-        ret0, _ := ret[0].(model.Product)
-        ret1, _ := ret[1].(error)
-        return ret0, ret1
-}
-
-// FindByBarcode indicates an expected call of FindByBarcode.
-func (mr *MockRepositoryMockRecorder) FindByBarcode(barcode interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByBarcode", reflect.TypeOf((*MockRepository)(nil).FindByBarcode), barcode)
-}
-
 // MockRepository is a mock of Repository interface.
 type MockRepository struct {
         ctrl     *gomock.Controller
@@ -96,46 +36,194 @@ func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
         return m.recorder
 }
 
-// FindAll mocks base method.
-func (m *MockRepository) FindAll(pageable utils.Pageable) utils.Pageable {
+// DeleteBrand mocks base method.
+func (m *MockRepository) DeleteBrand(id uuid.UUID) (model.Brand, error) {
         m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "FindAll", pageable)
-        ret0, _ := ret[0].(utils.Pageable)
-        return ret0
-}
-
-// FindAll indicates an expected call of FindAll.
-func (mr *MockRepositoryMockRecorder) FindAll(pageable interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockRepository)(nil).FindAll), pageable)
-}
-
-// FindByDescription mocks base method.
-func (m *MockRepository) FindByDescription(description string, pageable utils.Pageable) (utils.Pageable, error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "FindByDescription", description, pageable)
-        ret0, _ := ret[0].(utils.Pageable)
-        ret1, _ := ret[1].(error)
-        return ret0, ret1
-}
-
-// FindByDescription indicates an expected call of FindByDescription.
-func (mr *MockRepositoryMockRecorder) FindByDescription(description, pageable interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByDescription", reflect.TypeOf((*MockRepository)(nil).FindByDescription), description, pageable)
-}
-
-// FindById mocks base method.
-func (m *MockRepository) FindById(id uuid.UUID) (model.Brand, error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "FindById", id)
+        ret := m.ctrl.Call(m, "DeleteBrand", id)
         ret0, _ := ret[0].(model.Brand)
         ret1, _ := ret[1].(error)
         return ret0, ret1
 }
 
-// FindById indicates an expected call of FindById.
-func (mr *MockRepositoryMockRecorder) FindById(id interface{}) *gomock.Call {
+// DeleteBrand indicates an expected call of DeleteBrand.
+func (mr *MockRepositoryMockRecorder) DeleteBrand(id interface{}) *gomock.Call {
         mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindById", reflect.TypeOf((*MockRepository)(nil).FindById), id)
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteBrand", reflect.TypeOf((*MockRepository)(nil).DeleteBrand), id)
+}
+
+// EditBrand mocks base method.
+func (m *MockRepository) EditBrand(arg0 model.Brand) (model.Brand, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "EditBrand", arg0)
+        ret0, _ := ret[0].(model.Brand)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// EditBrand indicates an expected call of EditBrand.
+func (mr *MockRepositoryMockRecorder) EditBrand(arg0 interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditBrand", reflect.TypeOf((*MockRepository)(nil).EditBrand), arg0)
+}
+
+// EditProduct mocks base method.
+func (m *MockRepository) EditProduct(arg0 model.Product) (model.Product, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "EditProduct", arg0)
+        ret0, _ := ret[0].(model.Product)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// EditProduct indicates an expected call of EditProduct.
+func (mr *MockRepositoryMockRecorder) EditProduct(arg0 interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EditProduct", reflect.TypeOf((*MockRepository)(nil).EditProduct), arg0)
+}
+
+// FindAllBrands mocks base method.
+func (m *MockRepository) FindAllBrands(pageable utils.Pageable) utils.Pageable {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindAllBrands", pageable)
+        ret0, _ := ret[0].(utils.Pageable)
+        return ret0
+}
+
+// FindAllBrands indicates an expected call of FindAllBrands.
+func (mr *MockRepositoryMockRecorder) FindAllBrands(pageable interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllBrands", reflect.TypeOf((*MockRepository)(nil).FindAllBrands), pageable)
+}
+
+// FindAllBrandsByDescription mocks base method.
+func (m *MockRepository) FindAllBrandsByDescription(description string, pageable utils.Pageable) (utils.Pageable, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindAllBrandsByDescription", description, pageable)
+        ret0, _ := ret[0].(utils.Pageable)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// FindAllBrandsByDescription indicates an expected call of FindAllBrandsByDescription.
+func (mr *MockRepositoryMockRecorder) FindAllBrandsByDescription(description, pageable interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllBrandsByDescription", reflect.TypeOf((*MockRepository)(nil).FindAllBrandsByDescription), description, pageable)
+}
+
+// FindAllProducts mocks base method.
+func (m *MockRepository) FindAllProducts(filter string, pageable utils.Pageable) utils.Pageable {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindAllProducts", filter, pageable)
+        ret0, _ := ret[0].(utils.Pageable)
+        return ret0
+}
+
+// FindAllProducts indicates an expected call of FindAllProducts.
+func (mr *MockRepositoryMockRecorder) FindAllProducts(filter, pageable interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllProducts", reflect.TypeOf((*MockRepository)(nil).FindAllProducts), filter, pageable)
+}
+
+// FindAllProductsNotFound mocks base method.
+func (m *MockRepository) FindAllProductsNotFound(pageable utils.Pageable) utils.Pageable {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindAllProductsNotFound", pageable)
+        ret0, _ := ret[0].(utils.Pageable)
+        return ret0
+}
+
+// FindAllProductsNotFound indicates an expected call of FindAllProductsNotFound.
+func (mr *MockRepositoryMockRecorder) FindAllProductsNotFound(pageable interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllProductsNotFound", reflect.TypeOf((*MockRepository)(nil).FindAllProductsNotFound), pageable)
+}
+
+// FindAllProductsNotFoundByBarcode mocks base method.
+func (m *MockRepository) FindAllProductsNotFoundByBarcode(barcode string, pageable utils.Pageable) (utils.Pageable, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindAllProductsNotFoundByBarcode", barcode, pageable)
+        ret0, _ := ret[0].(utils.Pageable)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// FindAllProductsNotFoundByBarcode indicates an expected call of FindAllProductsNotFoundByBarcode.
+func (mr *MockRepositoryMockRecorder) FindAllProductsNotFoundByBarcode(barcode, pageable interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllProductsNotFoundByBarcode", reflect.TypeOf((*MockRepository)(nil).FindAllProductsNotFoundByBarcode), barcode, pageable)
+}
+
+// FindBrandById mocks base method.
+func (m *MockRepository) FindBrandById(id uuid.UUID) (model.Brand, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindBrandById", id)
+        ret0, _ := ret[0].(model.Brand)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// FindBrandById indicates an expected call of FindBrandById.
+func (mr *MockRepositoryMockRecorder) FindBrandById(id interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindBrandById", reflect.TypeOf((*MockRepository)(nil).FindBrandById), id)
+}
+
+// FindProductByBarcode mocks base method.
+func (m *MockRepository) FindProductByBarcode(barcode string) (model.Product, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindProductByBarcode", barcode)
+        ret0, _ := ret[0].(model.Product)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// FindProductByBarcode indicates an expected call of FindProductByBarcode.
+func (mr *MockRepositoryMockRecorder) FindProductByBarcode(barcode interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProductByBarcode", reflect.TypeOf((*MockRepository)(nil).FindProductByBarcode), barcode)
+}
+
+// FindProductById mocks base method.
+func (m *MockRepository) FindProductById(id uuid.UUID) (model.Product, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindProductById", id)
+        ret0, _ := ret[0].(model.Product)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// FindProductById indicates an expected call of FindProductById.
+func (mr *MockRepositoryMockRecorder) FindProductById(id interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProductById", reflect.TypeOf((*MockRepository)(nil).FindProductById), id)
+}
+
+// InsertBrand mocks base method.
+func (m *MockRepository) InsertBrand(arg0 model.Brand) (model.Brand, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "InsertBrand", arg0)
+        ret0, _ := ret[0].(model.Brand)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// InsertBrand indicates an expected call of InsertBrand.
+func (mr *MockRepositoryMockRecorder) InsertBrand(arg0 interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertBrand", reflect.TypeOf((*MockRepository)(nil).InsertBrand), arg0)
+}
+
+// InsertProduct mocks base method.
+func (m *MockRepository) InsertProduct(arg0 model.Product) (model.Product, error) {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "InsertProduct", arg0)
+        ret0, _ := ret[0].(model.Product)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}
+
+// InsertProduct indicates an expected call of InsertProduct.
+func (mr *MockRepositoryMockRecorder) InsertProduct(arg0 interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertProduct", reflect.TypeOf((*MockRepository)(nil).InsertProduct), arg0)
 }

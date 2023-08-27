@@ -23,14 +23,14 @@ var products = []model.Product{
 		ID:          uuid.New(),
 		Barcode:     "7891020301",
 		Description: "Produto para teste 1",
-		Brand:       "Marda para teste 1",
+		Brand:       model.Brand{Description: "Marda para teste 1"},
 		CreatedAt:   time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC),
 	},
 	{
 		ID:          uuid.New(),
 		Barcode:     "7891020302",
 		Description: "Produto para teste 2",
-		Brand:       "Marda para teste 2",
+		Brand:       model.Brand{Description: "Marda para teste 2"},
 		CreatedAt:   time.Date(2022, time.February, 2, 22, 32, 42, 0, time.UTC),
 	},
 }
@@ -41,12 +41,12 @@ func TestFindProductByBarcode_Should_Return_Status_200_To_Fetch_A_Product_By_Bar
 	defer ctrl.Finish()
 	repository := mocks.NewMockRepository(ctrl)
 	controller := controller.NewController(repository)
-	repository.EXPECT().FindByBarcode(gomock.Any()).Return(products[0], nil)
+	repository.EXPECT().FindProductByBarcode(gomock.Any()).Return(products[0], nil)
 
 	r := router.StartRoutes(controller)
 
 	// cria uma requisicao HTTP GET para "/v1/produto/{barcode}"
-	req, err := http.NewRequest("GET", "/v1/produto/7891020301", nil)
+	req, err := http.NewRequest("GET", "/v1/produto/codigo-barras/7891020301", nil)
 	assert.NoError(t, err)
 
 	// cria um HTTP recorder para receber a resposta
@@ -64,7 +64,7 @@ func TestFindProductByBarcode_Should_Return_Status_200_To_Fetch_A_Product_By_Bar
 	assert.NotNil(t, result.ID)
 	assert.Equal(t, "7891020301", result.Barcode)
 	assert.Equal(t, "Produto para teste 1", result.Description)
-	assert.Equal(t, "Marda para teste 1", result.Brand)
+	assert.Equal(t, model.Brand{Description: "Marda para teste 1"}, result.Brand)
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), result.CreatedAt)
 }
 
@@ -74,12 +74,12 @@ func TestFindProductByBarcode_Should_Return_Status_404_To_Fetch_A_Product_By_Bar
 	defer ctrl.Finish()
 	repository := mocks.NewMockRepository(ctrl)
 	controller := controller.NewController(repository)
-	repository.EXPECT().FindByBarcode(gomock.Any()).Return(model.Product{}, errors.New("Error"))
+	repository.EXPECT().FindProductByBarcode(gomock.Any()).Return(model.Product{}, errors.New("Error"))
 
 	r := router.StartRoutes(controller)
 
 	// cria uma requisicao HTTP GET para "/v1/produto/{barcode}"
-	req, err := http.NewRequest("GET", "/v1/produto/7891020301", nil)
+	req, err := http.NewRequest("GET", "/v1/produto/codigo-barras/7891020301", nil)
 	assert.NoError(t, err)
 
 	// cria um HTTP recorder para receber a resposta
@@ -98,5 +98,5 @@ func TestFindProductByBarcode_Should_Return_Status_404_To_Fetch_A_Product_By_Bar
 	assert.Equal(t, res.Code, result.Status)
 	assert.Equal(t, http.StatusText(res.Code), result.Error)
 	assert.Equal(t, "Produto não encontrado", result.Message)
-	assert.Equal(t, "/v1/produto/7891020301", result.Path)
+	assert.Equal(t, "/v1/produto/codigo-barras/7891020301", result.Path)
 }

@@ -15,7 +15,7 @@ import (
 // Deve retornar o total de metodos existentes
 func TestRepository_Should_Return_The_Total_Methods(t *testing.T) {
 	totalMethods := reflect.TypeOf((*repository.Repository)(nil)).Elem().NumMethod()
-	assert.Equal(t, 7, totalMethods)
+	assert.Equal(t, 13, totalMethods)
 }
 
 // Deve retornar os metodos para a interface product repository
@@ -30,7 +30,13 @@ func TestNewRepository_Should_Return_Methods_For_ProductRepository(t *testing.T)
 	assert.NotNil(t, repositoryTypeOf)
 
 	nameOfMethods := []string{
-		"FindByBarcode",
+		"InsertProduct",
+		"EditProduct",
+		"FindAllProducts",
+		"FindProductById",
+		"FindProductByBarcode",
+		"FindAllProductsNotFound",
+		"FindAllProductsNotFoundByBarcode",
 	}
 
 	assert.Equal(t, len(nameOfMethods), productRepositoryTypeOf.NumMethod())
@@ -59,12 +65,12 @@ func TestNewRepository_Should_Return_Methods_For_BrandRepository(t *testing.T) {
 	assert.NotNil(t, repositoryTypeOf)
 
 	nameOfMethods := []string{
-		"Insert",
-		"Edit",
-		"Delete",
-		"FindAll",
-		"FindById",
-		"FindByDescription",
+		"InsertBrand",
+		"EditBrand",
+		"DeleteBrand",
+		"FindAllBrands",
+		"FindBrandById",
+		"FindAllBrandsByDescription",
 	}
 
 	assert.Equal(t, len(nameOfMethods), brandRepositoryTypeOf.NumMethod())

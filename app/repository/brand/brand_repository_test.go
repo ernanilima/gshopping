@@ -37,7 +37,7 @@ func TestFindAll_Should_Return_All_Brands(t *testing.T) {
 	mock.ExpectQuery("SELECT (.+) FROM brand").WillReturnRows(rows).RowsWillBeClosed()
 	connector.EXPECT().OpenConnection().Return(db)
 
-	result := brand_repository.NewBrandRepository(connector).FindAll(utils.Pageable{
+	result := brand_repository.NewBrandRepository(connector).FindAllBrands(utils.Pageable{
 		Size: 10,
 		Sort: "id ASC",
 	})
@@ -88,7 +88,7 @@ func TestFindById_Should_Return_A_Brand_When_Searching_By_ID(t *testing.T) {
 	mock.ExpectQuery("SELECT (.+) FROM brand b (.+) WHERE b.id").WillReturnRows(rows).RowsWillBeClosed()
 	connector.EXPECT().OpenConnection().Return(db)
 
-	result, err := brand_repository.NewBrandRepository(connector).FindById(uuid.New())
+	result, err := brand_repository.NewBrandRepository(connector).FindBrandById(uuid.New())
 	assert.NoError(t, err)
 
 	// verifica os resultados
@@ -121,7 +121,7 @@ func TestFindAll_Should_Return_The_Brands_Found_When_Searching_By_Description(t 
 	mock.ExpectQuery("SELECT (.+) FROM brand b (.+) WHERE UPPER\\(unaccent\\(b.description\\)\\)").WillReturnRows(rows).RowsWillBeClosed()
 	connector.EXPECT().OpenConnection().Return(db)
 
-	result, err := brand_repository.NewBrandRepository(connector).FindByDescription("teste", utils.Pageable{
+	result, err := brand_repository.NewBrandRepository(connector).FindAllBrandsByDescription("teste", utils.Pageable{
 		Size: 10,
 		Sort: "id ASC",
 	})
