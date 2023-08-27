@@ -21,4 +21,5 @@ type BrandController interface {
 	FindAllBrands(w http.ResponseWriter, r *http.Request)
 	FindBrandById(w http.ResponseWriter, r *http.Request)
 	FindAllBrandsByDescription(w http.ResponseWriter, r *http.Request)
+	FindTotalBrands(w http.ResponseWriter, r *http.Request)
 }

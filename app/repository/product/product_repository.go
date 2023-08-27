@@ -22,6 +22,7 @@ func (c *ProductConnection) InsertProduct(product model.Product) (model.Product,
 	_, err := conn.Exec("INSERT INTO product (id, barcode, description, brand_id, created_at) VALUES ($1, $2, $3, $4, $5)",
 		product.ID, strings.TrimSpace(product.Barcode), strings.TrimSpace(product.Description), product.Brand.ID, product.CreatedAt)
 	if err != nil {
+		print("InsertProduct - ", err.Error())
 		return model.Product{}, err
 	}
 
@@ -43,6 +44,7 @@ func (c *ProductConnection) EditProduct(product model.Product) (model.Product, e
 	_, err := conn.Exec("UPDATE product SET barcode=$2, description=$3, brand_id=$4 WHERE id=$1",
 		result.ID, strings.TrimSpace(result.Barcode), strings.TrimSpace(result.Description), result.Brand.ID)
 	if err != nil {
+		print("EditProduct - ", err.Error())
 		return model.Product{}, err
 	}
 
@@ -141,7 +143,7 @@ func (c *ProductConnection) FindProductByBarcode(barcode string) (model.Product,
 		if len(barcode) > 0 {
 			c.insertProductNotFound(barcode)
 		}
-		print("FindByBarcode - ", err.Error())
+		print("FindProductByBarcode - ", err.Error())
 		return model.Product{}, err
 	}
 
@@ -161,7 +163,7 @@ func (c *ProductConnection) FindAllProductsNotFound(pageable utils.Pageable) uti
 	results, err := conn.Query(query, pageable.Size, pageable.Size*pageable.Page)
 
 	if err != nil {
-		print("FindAllNotFound - ", err.Error())
+		print("FindAllProductsNotFound - ", err.Error())
 		return utils.Pageable{}
 	}
 	defer results.Close()
@@ -190,7 +192,7 @@ func (c *ProductConnection) FindAllProductsNotFoundByBarcode(barcode string, pag
 	results, err := conn.Query(query, fmt.Sprintf("%%%s%%", barcode), pageable.Size, pageable.Size*pageable.Page)
 
 	if err != nil {
-		print("FindNotFoundByBarcode - ", err.Error())
+		print("FindAllProductsNotFoundByBarcode - ", err.Error())
 		return utils.Pageable{}, err
 	}
 	defer results.Close()
@@ -228,4 +230,36 @@ func (c *ProductConnection) deleteProductNotFound(barcode string) {
 	if err != nil {
 		fmt.Printf("Erro ao deletar ProductNotFound com o codigo de barras: %s | %s", barcode, err)
 	}
+}
+
+// FindTotalProducts busca o total de produtos cadastrados
+func (c *ProductConnection) FindTotalProducts() int32 {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	results := conn.QueryRow("SELECT COUNT(*) FROM product")
+
+	var totalProducts int32
+	if err := results.Scan(&totalProducts); err != nil {
+		print("FindTotalProducts - ", err.Error())
+		return 0
+	}
+
+	return totalProducts
+}
+
+// FindTotalProductsNotFound busca o total de produtos cadastrados
+func (c *ProductConnection) FindTotalProductsNotFound() int32 {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	results := conn.QueryRow("SELECT COUNT(*) FROM notfound")
+
+	var totalProductsNotFound int32
+	if err := results.Scan(&totalProductsNotFound); err != nil {
+		print("FindTotalProductsNotFound - ", err.Error())
+		return 0
+	}
+
+	return totalProductsNotFound
 }

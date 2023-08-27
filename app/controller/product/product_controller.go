@@ -133,3 +133,13 @@ func (repo *productRepository) FindAllProductsNotFoundByBarcode(w http.ResponseW
 
 	response.JSON(w, http.StatusOK, productsNotFound)
 }
+
+// FindTotalProducts busca o total de produtos cadastrados
+func (repo *productRepository) FindTotalProducts(w http.ResponseWriter, r *http.Request) {
+	response.JSON(w, http.StatusOK, repo.ProductRepository.FindTotalProducts())
+}
+
+// FindTotalProductsNotFound busca o total de produtos cadastrados como nao encontrados
+func (repo *productRepository) FindTotalProductsNotFound(w http.ResponseWriter, r *http.Request) {
+	response.JSON(w, http.StatusOK, repo.ProductRepository.FindTotalProductsNotFound())
+}

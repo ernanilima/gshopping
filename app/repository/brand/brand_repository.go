@@ -21,6 +21,7 @@ func (c *BrandConnection) InsertBrand(brand model.Brand) (model.Brand, error) {
 	_, err := conn.Exec("INSERT INTO brand (id, description, created_at) VALUES ($1, $2, $3)",
 		brand.ID, strings.TrimSpace(brand.Description), brand.CreatedAt)
 	if err != nil {
+		print("InsertBrand - ", err.Error())
 		return model.Brand{}, err
 	}
 
@@ -38,6 +39,7 @@ func (c *BrandConnection) EditBrand(brand model.Brand) (model.Brand, error) {
 	_, err := conn.Exec("UPDATE brand SET description=$2 WHERE id=$1",
 		result.ID, strings.TrimSpace(result.Description))
 	if err != nil {
+		print("EditBrand - ", err.Error())
 		return model.Brand{}, err
 	}
 
@@ -51,10 +53,12 @@ func (c *BrandConnection) DeleteBrand(id uuid.UUID) (model.Brand, error) {
 
 	result, err := c.FindBrandById(id)
 	if err != nil {
+		print("DeleteBrand - ", err.Error())
 		return model.Brand{}, err
 	}
 	_, err = conn.Exec("DELETE FROM brand WHERE id=$1", id)
 	if err != nil {
+		print("DeleteBrand - ", err.Error())
 		return model.Brand{}, err
 	}
 
@@ -76,6 +80,7 @@ func (c *BrandConnection) FindAllBrands(pageable utils.Pageable) utils.Pageable 
 	results, err := conn.Query(query, pageable.Size, pageable.Size*pageable.Page)
 
 	if err != nil {
+		print("FindAllBrands - ", err.Error())
 		return utils.Pageable{}
 	}
 	defer results.Close()
@@ -103,6 +108,7 @@ func (c *BrandConnection) FindBrandById(id uuid.UUID) (model.Brand, error) {
 
 	var brand model.Brand
 	if err := result.Scan(&brand.TotalProducts, &brand.ID, &brand.Code, &brand.Description, &brand.CreatedAt); err != nil {
+		print("FindBrandById - ", err.Error())
 		return model.Brand{}, err
 	}
 
@@ -125,6 +131,7 @@ func (c *BrandConnection) FindAllBrandsByDescription(description string, pageabl
 	results, err := conn.Query(query, fmt.Sprintf("%%%s%%", description), pageable.Size, pageable.Size*pageable.Page)
 
 	if err != nil {
+		print("FindAllBrandsByDescription - ", err.Error())
 		return utils.Pageable{}, err
 	}
 	defer results.Close()
@@ -137,4 +144,20 @@ func (c *BrandConnection) FindAllBrandsByDescription(description string, pageabl
 	}
 
 	return utils.GeneratePaginationRequest(brands, pageable), nil
+}
+
+// FindTotalBrands busca o total de mascas cadastradas
+func (c *BrandConnection) FindTotalBrands() int32 {
+	conn := c.OpenConnection()
+	defer conn.Close()
+
+	results := conn.QueryRow("SELECT COUNT(*) FROM brand")
+
+	var totalBrands int32
+	if err := results.Scan(&totalBrands); err != nil {
+		print("FindTotalBrands - ", err.Error())
+		return 0
+	}
+
+	return totalBrands
 }

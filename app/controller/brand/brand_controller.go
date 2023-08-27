@@ -147,3 +147,8 @@ func (repo *brandRepository) FindAllBrandsByDescription(w http.ResponseWriter, r
 
 	response.JSON(w, http.StatusOK, brands)
 }
+
+// FindTotalBrands busca o total de mascas cadastradas
+func (repo *brandRepository) FindTotalBrands(w http.ResponseWriter, r *http.Request) {
+	response.JSON(w, http.StatusOK, repo.BrandRepository.FindTotalBrands())
+}

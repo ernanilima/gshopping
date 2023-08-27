@@ -22,4 +22,5 @@ type BrandRepository interface {
 	FindAllBrands(pageable utils.Pageable) utils.Pageable
 	FindBrandById(id uuid.UUID) (model.Brand, error)
 	FindAllBrandsByDescription(description string, pageable utils.Pageable) (utils.Pageable, error)
+	FindTotalBrands() int32
 }

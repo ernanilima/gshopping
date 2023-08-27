@@ -23,4 +23,6 @@ type ProductRepository interface {
 	FindProductByBarcode(barcode string) (model.Product, error)
 	FindAllProductsNotFound(pageable utils.Pageable) utils.Pageable
 	FindAllProductsNotFoundByBarcode(barcode string, pageable utils.Pageable) (utils.Pageable, error)
+	FindTotalProducts() int32
+	FindTotalProductsNotFound() int32
 }

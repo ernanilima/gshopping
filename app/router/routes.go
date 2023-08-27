@@ -19,6 +19,7 @@ func StartRoutes(controller controller.Controller) *chi.Mux {
 	r := chi.NewRouter()
 
 	routes := []Router{}
+	routes = append(routes, dashboardRouter(controller)...)
 	routes = append(routes, productRouter(controller)...)
 	routes = append(routes, brandRouter(controller)...)
 
