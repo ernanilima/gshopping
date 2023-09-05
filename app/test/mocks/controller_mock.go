@@ -166,6 +166,42 @@ func (mr *MockControllerMockRecorder) FindProductById(w, r interface{}) *gomock.
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProductById", reflect.TypeOf((*MockController)(nil).FindProductById), w, r)
 }
 
+// FindTotalBrands mocks base method.
+func (m *MockController) FindTotalBrands(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "FindTotalBrands", w, r)
+}
+
+// FindTotalBrands indicates an expected call of FindTotalBrands.
+func (mr *MockControllerMockRecorder) FindTotalBrands(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindTotalBrands", reflect.TypeOf((*MockController)(nil).FindTotalBrands), w, r)
+}
+
+// FindTotalProducts mocks base method.
+func (m *MockController) FindTotalProducts(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "FindTotalProducts", w, r)
+}
+
+// FindTotalProducts indicates an expected call of FindTotalProducts.
+func (mr *MockControllerMockRecorder) FindTotalProducts(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindTotalProducts", reflect.TypeOf((*MockController)(nil).FindTotalProducts), w, r)
+}
+
+// FindTotalProductsNotFound mocks base method.
+func (m *MockController) FindTotalProductsNotFound(w http.ResponseWriter, r *http.Request) {
+        m.ctrl.T.Helper()
+        m.ctrl.Call(m, "FindTotalProductsNotFound", w, r)
+}
+
+// FindTotalProductsNotFound indicates an expected call of FindTotalProductsNotFound.
+func (mr *MockControllerMockRecorder) FindTotalProductsNotFound(w, r interface{}) *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindTotalProductsNotFound", reflect.TypeOf((*MockController)(nil).FindTotalProductsNotFound), w, r)
+}
+
 // InsertBrand mocks base method.
 func (m *MockController) InsertBrand(w http.ResponseWriter, r *http.Request) {
         m.ctrl.T.Helper()

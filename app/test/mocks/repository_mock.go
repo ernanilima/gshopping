@@ -198,6 +198,48 @@ func (mr *MockRepositoryMockRecorder) FindProductById(id interface{}) *gomock.Ca
         return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindProductById", reflect.TypeOf((*MockRepository)(nil).FindProductById), id)
 }
 
+// FindTotalBrands mocks base method.
+func (m *MockRepository) FindTotalBrands() int32 {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindTotalBrands")
+        ret0, _ := ret[0].(int32)
+        return ret0
+}
+
+// FindTotalBrands indicates an expected call of FindTotalBrands.
+func (mr *MockRepositoryMockRecorder) FindTotalBrands() *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindTotalBrands", reflect.TypeOf((*MockRepository)(nil).FindTotalBrands))
+}
+
+// FindTotalProducts mocks base method.
+func (m *MockRepository) FindTotalProducts() int32 {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindTotalProducts")
+        ret0, _ := ret[0].(int32)
+        return ret0
+}
+
+// FindTotalProducts indicates an expected call of FindTotalProducts.
+func (mr *MockRepositoryMockRecorder) FindTotalProducts() *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindTotalProducts", reflect.TypeOf((*MockRepository)(nil).FindTotalProducts))
+}
+
+// FindTotalProductsNotFound mocks base method.
+func (m *MockRepository) FindTotalProductsNotFound() int32 {
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindTotalProductsNotFound")
+        ret0, _ := ret[0].(int32)
+        return ret0
+}
+
+// FindTotalProductsNotFound indicates an expected call of FindTotalProductsNotFound.
+func (mr *MockRepositoryMockRecorder) FindTotalProductsNotFound() *gomock.Call {
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindTotalProductsNotFound", reflect.TypeOf((*MockRepository)(nil).FindTotalProductsNotFound))
+}
+
 // InsertBrand mocks base method.
 func (m *MockRepository) InsertBrand(arg0 model.Brand) (model.Brand, error) {
         m.ctrl.T.Helper()

@@ -22,6 +22,9 @@ func TestStartRoutes_Should_Exist_All_Routes(t *testing.T) {
 	r := router.StartRoutes(controller)
 
 	routes := []http.Handler{
+		getRouteByName(r.Routes(), "/v1/dashboard/total-marcas").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/dashboard/total-produtos").Handlers["GET"],
+		getRouteByName(r.Routes(), "/v1/dashboard/total-produtos-nao-encontrados").Handlers["GET"],
 		getRouteByName(r.Routes(), "/v1/marca").Handlers["GET"],
 		getRouteByName(r.Routes(), "/v1/marca").Handlers["POST"],
 		getRouteByName(r.Routes(), "/v1/marca/{id}").Handlers["GET"],
