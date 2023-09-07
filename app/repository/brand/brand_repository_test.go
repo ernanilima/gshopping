@@ -29,7 +29,7 @@ func TestInsertBrand_Should_Insert_A_Brand(t *testing.T) {
 	mock.ExpectPing()
 
 	brand := model.Brand{
-		Description: "Marda para teste 1",
+		Description: "Marca para teste 1",
 	}
 
 	// cria um mock da query executada
@@ -41,7 +41,7 @@ func TestInsertBrand_Should_Insert_A_Brand(t *testing.T) {
 
 	// verifica os resultados
 	assert.NotNil(t, result.ID)
-	assert.Equal(t, "Marda para teste 1", result.Description)
+	assert.Equal(t, "Marca para teste 1", result.Description)
 	assert.NotNil(t, result.CreatedAt)
 }
 
@@ -74,7 +74,7 @@ func TestEditBrand_Should_Edit_A_Brand(t *testing.T) {
 
 	brand := model.Brand{
 		ID:          uuid.New(),
-		Description: "Marda para teste EDIT",
+		Description: "Marca para teste EDIT",
 		CreatedAt:   time.Date(2022, time.February, 2, 22, 32, 42, 0, time.UTC),
 	}
 
@@ -83,7 +83,45 @@ func TestEditBrand_Should_Edit_A_Brand(t *testing.T) {
 
 	// verifica os resultados
 	assert.NotNil(t, result.ID)
-	assert.Equal(t, "Marda para teste EDIT", result.Description)
+	assert.Equal(t, "Marca para teste EDIT", result.Description)
+	assert.NotNil(t, result.CreatedAt)
+}
+
+// Deve deletar uma marca
+func TestDeleteBrand_Should_Delete_A_Brand(t *testing.T) {
+	// cria um mock para conexao com o banco de dados
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	connector := mocks.NewMockDatabaseConnector(ctrl)
+
+	// cria um mock do banco de dados
+	db1, mock1, err := sqlmock.New()
+	assert.NoError(t, err)
+	defer db1.Close()
+	mock1.ExpectPing()
+	db2, mock2, err := sqlmock.New()
+	assert.NoError(t, err)
+	defer db2.Close()
+	mock2.ExpectPing()
+
+	id := uuid.New()
+
+	// cria um mock dos dados que deveram ser retornados
+	rows := sqlmock.NewRows([]string{"total_products", "id", "code", "description", "created_at"}).
+		AddRow(100, id, 10, "Marca para teste 1", time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC))
+
+	// cria um mock da query executada
+	mock2.ExpectQuery("SELECT (.+) FROM brand b (.+) WHERE b.id").WillReturnRows(rows).RowsWillBeClosed()
+	mock1.ExpectExec("DELETE FROM brand").WillReturnResult(sqlmock.NewResult(1, 1))
+	connector.EXPECT().OpenConnection().Return(db1)
+	connector.EXPECT().OpenConnection().Return(db2)
+
+	result, err := brand_repository.NewBrandRepository(connector).DeleteBrand(id)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.NotNil(t, result.ID)
+	assert.Equal(t, "Marca para teste 1", result.Description)
 	assert.NotNil(t, result.CreatedAt)
 }
 

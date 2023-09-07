@@ -15,27 +15,27 @@ import (
 var brands = []model.Brand{
 	{
 		ID:          uuid.New(),
-		Description: "Marda para teste 1",
+		Description: "Marca para teste 1",
 		CreatedAt:   time.Date(2020, time.January, 1, 21, 31, 41, 0, time.UTC),
 	},
 	{
 		ID:          uuid.New(),
-		Description: "Marda para teste 2",
+		Description: "Marca para teste 2",
 		CreatedAt:   time.Date(2020, time.January, 2, 22, 32, 42, 0, time.UTC),
 	},
 	{
 		ID:          uuid.New(),
-		Description: "Marda para teste 3",
+		Description: "Marca para teste 3",
 		CreatedAt:   time.Date(2020, time.January, 3, 23, 33, 43, 0, time.UTC),
 	},
 	{
 		ID:          uuid.New(),
-		Description: "Marda para teste 4",
+		Description: "Marca para teste 4",
 		CreatedAt:   time.Date(2020, time.January, 4, 24, 34, 44, 0, time.UTC),
 	},
 	{
 		ID:          uuid.New(),
-		Description: "Marda para teste 5",
+		Description: "Marca para teste 5",
 		CreatedAt:   time.Date(2020, time.January, 5, 25, 35, 45, 0, time.UTC),
 	},
 }

@@ -16,12 +16,12 @@ import (
 var brands = []model.Brand{
 	{
 		ID:          uuid.New(),
-		Description: "Marda para teste 1",
+		Description: "Marca para teste 1",
 		CreatedAt:   time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC),
 	},
 	{
 		ID:          uuid.New(),
-		Description: "Marda para teste 2",
+		Description: "Marca para teste 2",
 		CreatedAt:   time.Date(2022, time.February, 2, 22, 32, 42, 0, time.UTC),
 	},
 }
@@ -42,10 +42,10 @@ func TestJSON_Should_Return_A_Request_For_Success(t *testing.T) {
 	assert.Equal(t, "application/json", res.Header().Get("Content-Type"))
 	assert.Equal(t, 2, len(result))
 	assert.NotNil(t, result[0].ID)
-	assert.Equal(t, "Marda para teste 1", result[0].Description)
+	assert.Equal(t, "Marca para teste 1", result[0].Description)
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), result[0].CreatedAt)
 	assert.NotNil(t, result[1].ID)
-	assert.Equal(t, "Marda para teste 2", result[1].Description)
+	assert.Equal(t, "Marca para teste 2", result[1].Description)
 	assert.Equal(t, time.Date(2022, time.February, 2, 22, 32, 42, 0, time.UTC), result[1].CreatedAt)
 }
 

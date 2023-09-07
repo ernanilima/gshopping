@@ -22,12 +22,12 @@ import (
 var brands = []model.Brand{
 	{
 		ID:          uuid.New(),
-		Description: "Marda para teste 1",
+		Description: "Marca para teste 1",
 		CreatedAt:   time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC),
 	},
 	{
 		ID:          uuid.New(),
-		Description: "Marda para teste 2",
+		Description: "Marca para teste 2",
 		CreatedAt:   time.Date(2022, time.February, 2, 22, 32, 42, 0, time.UTC),
 	},
 }
@@ -100,7 +100,7 @@ func TestFindBrandById_Should_Return_Status_200_To_Fetch_A_Brand_By_ID(t *testin
 	// verifica os resultados
 	assert.Equal(t, http.StatusOK, res.Code)
 	assert.NotNil(t, result.ID)
-	assert.Equal(t, "Marda para teste 1", result.Description)
+	assert.Equal(t, "Marca para teste 1", result.Description)
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), result.CreatedAt)
 }
 
