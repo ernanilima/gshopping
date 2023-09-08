@@ -210,7 +210,7 @@ func TestFindById_Should_Return_A_Brand_When_Searching_By_ID(t *testing.T) {
 }
 
 // Deve retornar as marcas localizadas ao buscar por descricao
-func TestFindAll_Should_Return_The_Brands_Found_When_Searching_By_Description(t *testing.T) {
+func TestFindAllBrandsByDescription_Should_Return_The_Brands_Found_When_Searching_By_Description(t *testing.T) {
 	// cria um mock para conexao com o banco de dados
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -260,4 +260,31 @@ func TestFindAll_Should_Return_The_Brands_Found_When_Searching_By_Description(t 
 	assert.Equal(t, "Marca para teste 2", brands[1].Description)
 	assert.Equal(t, int64(200), brands[1].TotalProducts)
 	assert.Equal(t, time.Date(2022, time.February, 2, 22, 32, 42, 0, time.UTC), brands[1].CreatedAt)
+}
+
+// Deve retornar o total de marcas
+func TestFindTotalBrands_Should_Return_Total_Brands(t *testing.T) {
+	// cria um mock para conexao com o banco de dados
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	connector := mocks.NewMockDatabaseConnector(ctrl)
+
+	// cria um mock do banco de dados
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err)
+	defer db.Close()
+	mock.ExpectPing()
+
+	// cria um mock dos dados que deveram ser retornados
+	rows := sqlmock.NewRows([]string{"count"}).
+		AddRow(15)
+
+	// cria um mock da query executada
+	mock.ExpectQuery("SELECT (.+) FROM brand").WillReturnRows(rows).RowsWillBeClosed()
+	connector.EXPECT().OpenConnection().Return(db)
+
+	result := brand_repository.NewBrandRepository(connector).FindTotalBrands()
+
+	// verifica os resultados
+	assert.Equal(t, int32(15), result)
 }
