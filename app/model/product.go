@@ -17,5 +17,5 @@ type Product struct {
 type ProductNotFound struct {
 	ID       int64  `json:"id"`
 	Barcode  string `json:"barcode"`
-	Attempts string `json:"attempts"`
+	Attempts int64  `json:"attempts"`
 }
