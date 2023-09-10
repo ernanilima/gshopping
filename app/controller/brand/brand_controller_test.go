@@ -97,7 +97,7 @@ func TestEditBrand_Should_Edit_A_Brand(t *testing.T) {
 
 	r := router.StartRoutes(controller)
 
-	// cria uma requisicao HTTP PUT para "/v1/marca/{ID}"
+	// cria uma requisicao HTTP PUT para "/v1/marca/{id}"
 	body, err := json.Marshal(model.Brand{Description: "Marca de teste EDIT"})
 	assert.NoError(t, err)
 	req, err := http.NewRequest("PUT", fmt.Sprintf("/v1/marca/%s", brands[0].ID), bytes.NewBuffer(body))
@@ -146,7 +146,7 @@ func TestDeleteBrand_Should_Delete_A_Brand(t *testing.T) {
 
 	r := router.StartRoutes(controller)
 
-	// cria uma requisicao HTTP DELETE para "/v1/marca/{ID}"
+	// cria uma requisicao HTTP DELETE para "/v1/marca/{id}"
 	body, err := json.Marshal(model.Brand{Description: "Marca de teste DEL"})
 	assert.NoError(t, err)
 	req, err := http.NewRequest("DELETE", fmt.Sprintf("/v1/marca/%s", brands[0].ID), bytes.NewBuffer(body))
