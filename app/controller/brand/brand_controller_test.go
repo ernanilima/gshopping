@@ -1,8 +1,10 @@
 package brand_controller_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -21,15 +23,160 @@ import (
 
 var brands = []model.Brand{
 	{
-		ID:          uuid.New(),
-		Description: "Marca para teste 1",
-		CreatedAt:   time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC),
+		ID:            uuid.New(),
+		Code:          11,
+		Description:   "Marca para teste 1",
+		TotalProducts: 5,
+		CreatedAt:     time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC),
 	},
 	{
-		ID:          uuid.New(),
-		Description: "Marca para teste 2",
-		CreatedAt:   time.Date(2022, time.February, 2, 22, 32, 42, 0, time.UTC),
+		ID:            uuid.New(),
+		Code:          12,
+		Description:   "Marca para teste 2",
+		TotalProducts: 6,
+		CreatedAt:     time.Date(2022, time.February, 2, 22, 32, 42, 0, time.UTC),
 	},
+}
+
+// Deve inserir uma marca
+func TestInsertBrand_Should_Insert_A_Brand(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().InsertBrand(gomock.Any()).Return(brands[0], nil)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca"
+	body, err := json.Marshal(model.Brand{Description: "Marca para teste 1"})
+	assert.NoError(t, err)
+	req, err := http.NewRequest("POST", "/v1/marca", bytes.NewBuffer(body))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardSuccess
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+	dataMap, exist := result.Data.(map[string]interface{})
+	assert.True(t, exist)
+	jsonData, err := json.Marshal(dataMap)
+	assert.NoError(t, err)
+	var brand model.Brand
+	err = json.Unmarshal(jsonData, &brand)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusCreated, res.Code)
+	assert.Equal(t, "Marca inserida com sucesso", result.Message)
+	assert.NotNil(t, brand.ID)
+	assert.Equal(t, int64(11), brand.Code)
+	assert.Equal(t, "Marca para teste 1", brand.Description)
+	assert.Equal(t, int64(5), brand.TotalProducts)
+	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), brand.CreatedAt)
+}
+
+// Deve editar uma marca
+func TestEditBrand_Should_Edit_A_Brand(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().EditBrand(gomock.Any()).Return(model.Brand{
+		ID:            brands[0].ID,
+		Code:          brands[0].Code,
+		Description:   "Marca de teste EDIT",
+		TotalProducts: brands[0].TotalProducts,
+		CreatedAt:     brands[0].CreatedAt,
+	}, nil)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP PUT para "/v1/marca/{ID}"
+	body, err := json.Marshal(model.Brand{Description: "Marca de teste EDIT"})
+	assert.NoError(t, err)
+	req, err := http.NewRequest("PUT", fmt.Sprintf("/v1/marca/%s", brands[0].ID), bytes.NewBuffer(body))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardSuccess
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+	dataMap, exist := result.Data.(map[string]interface{})
+	assert.True(t, exist)
+	jsonData, err := json.Marshal(dataMap)
+	assert.NoError(t, err)
+	var brand model.Brand
+	err = json.Unmarshal(jsonData, &brand)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusOK, res.Code)
+	assert.Equal(t, "Marca editada com sucesso", result.Message)
+	assert.NotNil(t, brand.ID)
+	assert.Equal(t, int64(11), brand.Code)
+	assert.Equal(t, "Marca de teste EDIT", brand.Description)
+	assert.Equal(t, int64(5), brand.TotalProducts)
+	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), brand.CreatedAt)
+}
+
+// Deve deletar uma marca
+func TestDeleteBrand_Should_Delete_A_Brand(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().DeleteBrand(gomock.Any()).Return(model.Brand{
+		ID:            brands[0].ID,
+		Code:          brands[0].Code,
+		Description:   "Marca de teste DEL",
+		TotalProducts: brands[0].TotalProducts,
+		CreatedAt:     brands[0].CreatedAt,
+	}, nil)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP DELETE para "/v1/marca/{ID}"
+	body, err := json.Marshal(model.Brand{Description: "Marca de teste DEL"})
+	assert.NoError(t, err)
+	req, err := http.NewRequest("DELETE", fmt.Sprintf("/v1/marca/%s", brands[0].ID), bytes.NewBuffer(body))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardSuccess
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+	dataMap, exist := result.Data.(map[string]interface{})
+	assert.True(t, exist)
+	jsonData, err := json.Marshal(dataMap)
+	assert.NoError(t, err)
+	var brand model.Brand
+	err = json.Unmarshal(jsonData, &brand)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusOK, res.Code)
+	assert.Equal(t, "Marca excluída com sucesso", result.Message)
+	assert.NotNil(t, brand.ID)
+	assert.Equal(t, int64(11), brand.Code)
+	assert.Equal(t, "Marca de teste DEL", brand.Description)
+	assert.Equal(t, int64(5), brand.TotalProducts)
+	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), brand.CreatedAt)
 }
 
 // Deve retornar o status 200 para buscar todas as marcas
@@ -273,4 +420,33 @@ func TestFindAllBrandsByDescription_Should_Return_Status_404_To_Fetch_Brands_By_
 	assert.Equal(t, result.Error, http.StatusText(res.Code))
 	assert.Equal(t, result.Message, "Nenhuma Marca encontrada com 'nao existe'")
 	assert.Equal(t, result.Path, "/v1/marca/descricao/nao existe")
+}
+
+// Deve retornar o total de marcas
+func TestFindTotalBrands_Should_Return_Total_Brands(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().FindTotalBrands().Return(int32(15))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP GET para "/v1/dashboard/total-marcas"
+	req, err := http.NewRequest("GET", "/v1/dashboard/total-marcas", nil)
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result int32
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusOK, res.Code)
+	assert.Equal(t, int32(15), result)
 }
