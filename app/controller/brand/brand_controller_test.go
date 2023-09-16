@@ -17,6 +17,7 @@ import (
 	"github.com/ernanilima/gshopping/app/utils"
 	"github.com/ernanilima/gshopping/app/utils/response"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -81,6 +82,95 @@ func TestInsertBrand_Should_Insert_A_Brand(t *testing.T) {
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), brand.CreatedAt)
 }
 
+// Deve retornar o status 400 para inserir uma marca e nao enviar o body
+func TestInsertBrand_Should_Return_Status_400_To_Insert_A_Brand_And_Not_Send_Body(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca"
+	req, err := http.NewRequest("POST", "/v1/marca", bytes.NewBuffer(nil))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, "Erro no corpo recebido, valor inválido", result.Message)
+}
+
+// Deve retornar o status 400 para inserir uma marca com descricao muito grande
+func TestInsertBrand_Should_Return_Status_400_To_Insert_A_Brand_With_A_Very_Long_Description(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca"
+	body, err := json.Marshal(model.Brand{Description: "Marca para teste com descricao muito texto 1"})
+	assert.NoError(t, err)
+	req, err := http.NewRequest("POST", "/v1/marca", bytes.NewBuffer(body))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, "Erro de validação: Marca inválida", result.Message)
+}
+
+// Deve retornar o status 400 para inserir uma marca que ja existe
+func TestInsertBrand_Should_Return_Status_400_To_Insert_A_Brand_That_Already_Exists(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().InsertBrand(gomock.Any()).Return(model.Brand{}, errors.New("Error"))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca"
+	body, err := json.Marshal(model.Brand{Description: "Marca de teste 1"})
+	assert.NoError(t, err)
+	req, err := http.NewRequest("POST", "/v1/marca", bytes.NewBuffer(body))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, "Marca já existe", result.Message)
+}
+
 // Deve editar uma marca
 func TestEditBrand_Should_Edit_A_Brand(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -130,6 +220,123 @@ func TestEditBrand_Should_Edit_A_Brand(t *testing.T) {
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), brand.CreatedAt)
 }
 
+// Deve retornar o status 422 para editar uma marca e enviar o ID invalido
+func TestEditBrand_Should_Return_Status_422_To_Edit_A_Brand_And_Send_Invalid_ID(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca/{id}"
+	req, err := http.NewRequest("PUT", "/v1/marca/123", bytes.NewBuffer(nil))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusUnprocessableEntity, res.Code)
+	assert.Equal(t, "ID inválido", result.Message)
+}
+
+// Deve retornar o status 400 para editar uma marca e nao enviar o body
+func TestEditBrand_Should_Return_Status_400_To_Edit_A_Brand_And_Not_Send_Body(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca/{id}"
+	req, err := http.NewRequest("PUT", "/v1/marca/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", bytes.NewBuffer(nil))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, "Erro no corpo recebido, valor inválido", result.Message)
+}
+
+// Deve retornar o status 400 para editar uma marca com descricao muito grande
+func TestEditBrand_Should_Return_Status_400_To_Edit_A_Brand_With_A_Very_Long_Description(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca/{id}"
+	body, err := json.Marshal(model.Brand{Description: "Marca para teste com descricao muito texto 1"})
+	assert.NoError(t, err)
+	req, err := http.NewRequest("PUT", "/v1/marca/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", bytes.NewBuffer(body))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, "Erro de validação: Marca inválida", result.Message)
+}
+
+// Deve retornar o status 400 para editar uma marca que ja existe
+func TestEditBrand_Should_Return_Status_400_To_Edit_A_Brand_That_Already_Exists(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().EditBrand(gomock.Any()).Return(model.Brand{}, errors.New("Error"))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca/{id}"
+	body, err := json.Marshal(model.Brand{Description: "Marca de teste 1"})
+	assert.NoError(t, err)
+	req, err := http.NewRequest("PUT", "/v1/marca/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", bytes.NewBuffer(body))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, "Marca já existe", result.Message)
+}
+
 // Deve deletar uma marca
 func TestDeleteBrand_Should_Delete_A_Brand(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -177,6 +384,92 @@ func TestDeleteBrand_Should_Delete_A_Brand(t *testing.T) {
 	assert.Equal(t, "Marca de teste DEL", brand.Description)
 	assert.Equal(t, int64(5), brand.TotalProducts)
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), brand.CreatedAt)
+}
+
+// Deve retornar o status 422 para deletar uma marca e enviar o ID invalido
+func TestDeleteBrand_Should_Return_Status_422_To_Delete_A_Brand_And_Send_Invalid_ID(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca/{id}"
+	req, err := http.NewRequest("DELETE", "/v1/marca/123", bytes.NewBuffer(nil))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusUnprocessableEntity, res.Code)
+	assert.Equal(t, "ID inválido", result.Message)
+}
+
+// Deve retornar o status 404 para deletar uma marca que nao existe
+func TestDeleteBrand_Should_Return_Status_404_To_Delete_A_Brand_That_Does_Not_Exist(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().DeleteBrand(gomock.Any()).Return(model.Brand{}, errors.New("Error"))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca/{id}"
+	req, err := http.NewRequest("DELETE", "/v1/marca/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", nil)
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusNotFound, res.Code)
+	assert.Equal(t, "Marca não encontrada", result.Message)
+}
+
+// Deve retornar o status 409 para deletar uma marca que nao pode ser removida
+func TestDeleteBrand_Should_Return_Status_409_To_Delete_A_Brand_That_Cannot_Be_Removed(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().DeleteBrand(gomock.Any()).Return(model.Brand{}, &pq.Error{Message: "Error", Code: "unique_violation"})
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/marca/{id}"
+	req, err := http.NewRequest("DELETE", "/v1/marca/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", nil)
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusConflict, res.Code)
+	assert.Equal(t, "Marca não pode ser removida", result.Message)
 }
 
 // Deve retornar o status 200 para buscar todas as marcas
