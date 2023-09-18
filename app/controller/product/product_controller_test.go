@@ -99,6 +99,65 @@ func TestInsertProduct_Should_Insert_A_Product(t *testing.T) {
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), product.CreatedAt)
 }
 
+// Deve retornar o status 400 para inserir um produto e nao enviar o body
+func TestInsertProduct_Should_Return_Status_400_To_Insert_A_Product_And_Not_Send_Body(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/produto"
+	req, err := http.NewRequest("POST", "/v1/produto", bytes.NewBuffer(nil))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, "Erro no corpo recebido, valor inválido", result.Message)
+}
+
+// Deve retornar o status 400 para inserir um produto que ja existe
+func TestInsertProduct_Should_Return_Status_400_To_Insert_A_Product_That_Already_Exists(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().InsertProduct(gomock.Any()).Return(model.Product{}, errors.New("Error"))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/produto"
+	body, err := json.Marshal(model.Product{Description: "Produto de teste 1"})
+	assert.NoError(t, err)
+	req, err := http.NewRequest("POST", "/v1/produto", bytes.NewBuffer(body))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, "Produto já existe", result.Message)
+}
+
 // Deve editar um produto
 func TestEditProduct_Should_Edit_A_Product(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -155,6 +214,93 @@ func TestEditProduct_Should_Edit_A_Product(t *testing.T) {
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), product.CreatedAt)
 }
 
+// Deve retornar o status 422 para editar um produto e enviar o ID invalido
+func TestEditProduct_Should_Return_Status_422_To_Edit_A_Product_And_Send_Invalid_ID(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/produto/{id}"
+	req, err := http.NewRequest("PUT", "/v1/produto/123", bytes.NewBuffer(nil))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusUnprocessableEntity, res.Code)
+	assert.Equal(t, "ID inválido", result.Message)
+}
+
+// Deve retornar o status 400 para editar um produto e nao enviar o body
+func TestEditProduct_Should_Return_Status_400_To_Edit_A_Product_And_Not_Send_Body(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/produto/{id}"
+	req, err := http.NewRequest("PUT", "/v1/produto/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", bytes.NewBuffer(nil))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, "Erro no corpo recebido, valor inválido", result.Message)
+}
+
+// Deve retornar o status 400 para editar um produto que ja existe
+func TestEditProduct_Should_Return_Status_400_To_Edit_A_Product_That_Already_Exists(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().EditProduct(gomock.Any()).Return(model.Product{}, errors.New("Error"))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP POST para "/v1/produto/{id}"
+	body, err := json.Marshal(model.Product{Description: "Produto de teste 1"})
+	assert.NoError(t, err)
+	req, err := http.NewRequest("PUT", "/v1/produto/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", bytes.NewBuffer(body))
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, "Produto já existe", result.Message)
+}
+
 // Deve retornar o status 200 para buscar todos os produtos
 func TestFindAllProducts_Should_Return_Status_200_To_Fetch_All_Products(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -196,6 +342,42 @@ func TestFindAllProducts_Should_Return_Status_200_To_Fetch_All_Products(t *testi
 	assert.Equal(t, 2, result.NumberOfElements)
 }
 
+// Deve retornar o status 404 para buscar todos os produtos com filtro e nao encontrar
+func TestFindAllProducts_Should_Return_Status_404_To_Fetch_All_Products_With_Filter_And_Not_Find(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().FindAllProducts(gomock.Any(), gomock.Any()).Return(utils.Pageable{
+		Content:          nil,
+		TotalPages:       0,  // total de paginas
+		TotalElements:    0,  // total de entidades localizadas
+		Size:             10, // total de entidades por pagina
+		Page:             0,  // pagina atual
+		NumberOfElements: 0,  // total de entidades por pagina
+	})
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP GET para "/v1/produto/pesquisa/{filter}"
+	req, err := http.NewRequest("GET", "/v1/produto/pesquisa/NomeDoProduto?size=12&page=0&sort=id,asc", nil)
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusNotFound, res.Code)
+	assert.Equal(t, "Nenhum Produto encontrado com 'NomeDoProduto'", result.Message)
+}
+
 // Deve retornar o status 200 para buscar um produto por id
 func TestFindProductById_Should_Return_Status_200_To_Fetch_A_Product_By_ID(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -228,6 +410,70 @@ func TestFindProductById_Should_Return_Status_200_To_Fetch_A_Product_By_ID(t *te
 	assert.NotNil(t, result.Brand.ID)
 	assert.Equal(t, "Marca para teste 1", result.Brand.Description)
 	assert.Equal(t, time.Date(2021, time.January, 1, 21, 31, 41, 0, time.UTC), result.CreatedAt)
+}
+
+// Deve retornar o status 422 para buscar um produto por id quando informar o id invalido
+func TestFindProductById_Should_Return_Status_422_To_Fetch_A_Product_By_ID_When_Informing_The_Invalid_ID(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	controller := controller.NewController(mocks.NewMockRepository(ctrl))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP GET para "/v1/produto/{id}"
+	req, err := http.NewRequest("GET", "/v1/produto/123", nil)
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusUnprocessableEntity, res.Code)
+	assert.NotNil(t, result.Timestamp)
+	assert.Equal(t, res.Code, result.Status)
+	assert.Equal(t, http.StatusText(res.Code), result.Error)
+	assert.Equal(t, "ID inválido", result.Message)
+	assert.Equal(t, "/v1/produto/123", result.Path)
+}
+
+// Deve retornar o status 404 para buscar um produto por id quando nao localizar nenhum produto
+func TestFindProductById_Should_Return_Status_404_To_Fetch_A_Product_By_ID_When_No_Product_Is_Found(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().FindProductById(gomock.Any()).Return(model.Product{}, errors.New("Error"))
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP GET para "/v1/produto/{id}"
+	req, err := http.NewRequest("GET", "/v1/produto/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", nil)
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusNotFound, res.Code)
+	assert.NotNil(t, result.Timestamp)
+	assert.Equal(t, res.Code, result.Status)
+	assert.Equal(t, http.StatusText(res.Code), result.Error)
+	assert.Equal(t, "Produto não encontrado", result.Message)
+	assert.Equal(t, "/v1/produto/6f75b5bc-e561-4bc7-a28d-e74bc706a4e9", result.Path)
 }
 
 // Deve retornar o status 200 para buscar um produto por codigo de barras
@@ -377,6 +623,46 @@ func TestFindAllProductsNotFoundByBarcode_Should_Return_Status_200_To_Fetch_All_
 	assert.Equal(t, 10, result.Size)
 	assert.Equal(t, 0, result.Page)
 	assert.Equal(t, 2, result.NumberOfElements)
+}
+
+// Deve retornar o status 404 para buscar todos os produtos nao encontrados por codigo de barras quando nao localizar nenhum produto
+func TestFindAllProductsNotFoundByBarcode_Should_Return_Status_404_To_Fetch_All_ProductsNotFound_By_Barcode_When_No_Product_Is_Found(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repository := mocks.NewMockRepository(ctrl)
+	controller := controller.NewController(repository)
+	repository.EXPECT().FindAllProductsNotFoundByBarcode(gomock.Any(), gomock.Any()).Return(utils.Pageable{
+		Content:          nil,
+		TotalPages:       0,  // total de paginas
+		TotalElements:    0,  // total de entidades localizadas
+		Size:             10, // total de entidades por pagina
+		Page:             0,  // pagina atual
+		NumberOfElements: 0,  // total de entidades por pagina
+	}, nil)
+
+	r := router.StartRoutes(controller)
+
+	// cria uma requisicao HTTP GET para "/v1/produto/nao-encontrado/{barcode}"
+	req, err := http.NewRequest("GET", "/v1/produto/nao-encontrado/999874455", nil)
+	assert.NoError(t, err)
+
+	// cria um HTTP recorder para receber a resposta
+	res := httptest.NewRecorder()
+
+	// executa a requisicao no router
+	r.ServeHTTP(res, req)
+
+	var result response.StandardError
+	err = json.Unmarshal(res.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	// verifica os resultados
+	assert.Equal(t, http.StatusNotFound, res.Code)
+	assert.NotNil(t, result.Timestamp)
+	assert.Equal(t, res.Code, result.Status)
+	assert.Equal(t, http.StatusText(res.Code), result.Error)
+	assert.Equal(t, "Nenhum registro encontrado com '999874455'", result.Message)
+	assert.Equal(t, "/v1/produto/nao-encontrado/999874455", result.Path)
 }
 
 // Deve retornar o total de produtos
