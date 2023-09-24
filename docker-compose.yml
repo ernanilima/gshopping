@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  gshoppring-api:
+    image: ernanilima/gshopping:v0.2-demo
+    environment:
+      - DB_HOST=$DB_HOST
+      - DB_PORT=$DB_PORT
+      - DB_USER=$DB_USER
+      - DB_PASS=$DB_PASS
+      - DB_NAME=$DB_NAME
+    ports:
+      - 80:4000

@@ -25,7 +25,7 @@ type DatabaseConfig struct {
 func (databaseConfig *DatabaseConfig) OpenConnection() *sql.DB {
 	configPostgres := databaseConfig.Database.Postgres
 
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
 		configPostgres.Host,
 		configPostgres.Port,
 		configPostgres.User,
