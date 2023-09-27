@@ -36,14 +36,3 @@ go test -coverprofile=coverage.out ./... | go tool cover -func=coverage.out | gr
 ```bash
 go test -coverprofile=coverage.out ./... | grep -E "no test files" | awk '{print $2}' | grep -xvf ./app/test/.ciignore | awk '{print "NO TEST\t", $0}'
 ```
-
-## Rodar aplicacao com docker
-
-```bash
-docker compose -f docker-compose.dev.yml up --build
-
-OU
-
-docker compose -f docker-compose.dev.yml build --no-cache
-docker compose -f docker-compose.dev.yml up
-```

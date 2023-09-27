@@ -13,12 +13,24 @@ A parte **Mobile** (_em desenvolvimento_) do projeto oferece a opção de pesqui
 ## Tecnologias utilizadas
 
 - [Go 1.20](https://go.dev/doc/go1.20) (Golang)
+- [Docker](https://hub.docker.com/r/ernanilima/gshopping/tags)
 - [Goose](https://github.com/pressly/goose)
 - [Chi](https://github.com/go-chi/chi)
 - [Testify](https://github.com/stretchr/testify)
 - [Testcontainer](https://golang.testcontainers.org/quickstart)
 - [Mockgen](https://github.com/uber-go/mock)
 - [Postgres](https://www.postgresql.org)
+
+## Rodar aplicacao com docker
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+
+OU
+
+docker compose -f docker-compose.dev.yml build --no-cache
+docker compose -f docker-compose.dev.yml up
+```
 
 ## Autor
 
