@@ -1,4 +1,5 @@
 # GShopping
+[![CI](https://github.com/ernanilima/gshopping/actions/workflows/ci.yml/badge.svg)](https://github.com/ernanilima/gshopping/actions/workflows/ci.yml)
 
 Este é um projeto em que desenvolvi uma API utilizando a linguagem Go. O principal propósito da aplicação é armazenar informações sobre produtos, incluindo seus códigos de barras e a respectiva marca a que pertencem. A API possibilita a fácil pesquisa e recuperação desses dados.
 
