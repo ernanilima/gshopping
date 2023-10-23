@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.9'
 services:
   gshoppring-api:
     build:
@@ -17,6 +17,7 @@ services:
     depends_on:
       - gshoppring-db
     networks:
+      - nginx-ssl_nginx-net
       - gshoppring-net
 
   gshoppring-db:
@@ -41,3 +42,5 @@ services:
 networks:
   gshoppring-net:
     driver: bridge
+  nginx-ssl_nginx-net:
+    external: true

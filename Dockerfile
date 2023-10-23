@@ -2,7 +2,7 @@ FROM golang:1.20 AS build
 
 WORKDIR /app
 COPY . .
-RUN go mod download && go mod verify
+RUN go mod tidy
 RUN CGO_ENABLED=0 GOOS=linux go build -o /gshopping
 
 FROM gcr.io/distroless/base-debian11
