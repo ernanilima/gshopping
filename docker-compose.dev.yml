@@ -1,13 +1,13 @@
 version: '3.9'
 services:
-  gshoppring-api:
+  gshopping-api:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: gshoppring-api
+    container_name: gshopping-api
     restart: always
     environment:
-      - DB_HOST=gshoppring-db
+      - DB_HOST=gshopping-db
       - DB_PORT=45432
       - DB_USER=postgres
       - DB_PASS=postgres
@@ -15,16 +15,16 @@ services:
     ports:
       - 4000:4000
     depends_on:
-      - gshoppring-db
+      - gshopping-db
     networks:
-      - nginx-ssl_nginx-net
-      - gshoppring-net
+      - nginx-net
+      - gshopping-net
 
-  gshoppring-db:
+  gshopping-db:
     build: 
       context: ./db/postgres
       dockerfile: Dockerfile
-    container_name: gshoppring-db
+    container_name: gshopping-db
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
     restart: always
     ports:
@@ -34,13 +34,14 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     networks:
-      - gshoppring-net
+      - gshopping-net
     volumes:
       - ./db/.docker:/var/lib/postgresql/data
       - ./db/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
 
 networks:
-  gshoppring-net:
+  gshopping-net:
     driver: bridge
-  nginx-ssl_nginx-net:
-    external: true
+  nginx-net:
+    driver: bridge
+    name: nginx-net

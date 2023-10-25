@@ -14,7 +14,7 @@ import (
 const (
 	username = "postgres"
 	password = "postgres"
-	database = "gshoppring-test"
+	database = "gshopping-test"
 )
 
 // GetConfigsForIntegrationTesting cria um banco de dados postgres para teste de integracao com testcontainers

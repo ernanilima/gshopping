@@ -1,6 +1,6 @@
 version: '3.9'
 services:
-  gshoppring-api:
+  gshopping-api:
     image: ernanilima/gshopping:v0.2-demo
     environment:
       - DB_HOST=$DB_HOST
