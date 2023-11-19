@@ -15,7 +15,7 @@ import (
 )
 
 func TestOpenConnection_Success(t *testing.T) {
-	configs := helpers.GetConfigsForIntegrationTesting(context.Background())
+	configs := helpers.GetConfigsForIntegrationTesting(context.Background(), t)
 
 	databaseConfig := &database.DatabaseConfig{Config: configs}
 	conn := databaseConfig.OpenConnection()
@@ -26,7 +26,7 @@ func TestOpenConnection_Success(t *testing.T) {
 }
 
 func TestUPMigrations_Success(t *testing.T) {
-	configs := helpers.GetConfigsForIntegrationTesting(context.Background())
+	configs := helpers.GetConfigsForIntegrationTesting(context.Background(), t)
 
 	databaseConfig := &database.DatabaseConfig{Config: configs}
 

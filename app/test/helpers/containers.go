@@ -3,6 +3,7 @@ package helpers
 import (
 	"context"
 	"log"
+	"testing"
 	"time"
 
 	"github.com/ernanilima/gshopping/app/config"
@@ -21,15 +22,8 @@ const (
 // https://golang.testcontainers.org/modules/postgres
 // https://github.com/testcontainers/tc-guide-getting-started-with-testcontainers-for-go/blob/main/customer/repo_test.go
 // https://medium.com/@dilshataliev/integration-tests-with-golang-test-containers-and-postgres-abb49e8096c5
-func GetConfigsForIntegrationTesting(ctx context.Context) *config.Config {
-	container, err := postgres.RunContainer(ctx,
-		testcontainers.WithImage("postgres:15.1-alpine"),
-		postgres.WithUsername(username),
-		postgres.WithPassword(password),
-		postgres.WithDatabase(database),
-		testcontainers.WithWaitStrategy(
-			wait.ForLog("database system is ready to accept connections").WithOccurrence(2).WithStartupTimeout(5*time.Second)),
-	)
+func GetConfigsForIntegrationTesting(ctx context.Context, t *testing.T) *config.Config {
+	container, err := runContainer(ctx, t.Name())
 	if err != nil {
 		log.Fatal("Erro ao criar container: ", err)
 	}
@@ -59,4 +53,20 @@ func GetConfigsForIntegrationTesting(ctx context.Context) *config.Config {
 		Name: database,
 	}
 	return configs
+}
+
+func runContainer(ctx context.Context, containerName string) (*postgres.PostgresContainer, error) {
+	return postgres.RunContainer(ctx,
+		testcontainers.WithImage("postgres:15.1-alpine"),
+		postgres.WithUsername(username),
+		postgres.WithPassword(password),
+		postgres.WithDatabase(database),
+		testcontainers.CustomizeRequest(testcontainers.GenericContainerRequest{
+			ContainerRequest: testcontainers.ContainerRequest{
+				Name: containerName,
+			},
+		}),
+		testcontainers.WithWaitStrategy(
+			wait.ForLog("database system is ready to accept connections").WithOccurrence(2).WithStartupTimeout(5*time.Second)),
+	)
 }

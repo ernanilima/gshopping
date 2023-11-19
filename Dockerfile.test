@@ -1,0 +1,12 @@
+FROM docker:dind
+
+RUN apk update && apk upgrade && \
+    apk add --no-cache go && \
+    apk --update add bash
+
+WORKDIR /gshopping
+
+COPY . .
+
+RUN chmod +x docker-entrypoint.test.sh
+RUN go mod tidy

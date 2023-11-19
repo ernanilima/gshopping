@@ -1,0 +1,50 @@
+name: CI Container
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-container:
+    runs-on: ubuntu-latest
+
+    env:
+      CONTAINER: "-f docker-compose.test.yml"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: go.sum
+
+      - name: Install Golang dependencies
+        run: |
+          go mod download
+          go mod tidy
+
+      - name: Build test container
+        run: TEST=ci docker compose $CONTAINER build --no-cache
+
+      - name: Start Test container
+        run: TEST=ci docker compose $CONTAINER up -d
+
+      - name: Validate ciignore
+        run: docker exec gshopping-test ./app/test/test-validate-ciignore.sh
+
+      - name: Run all tests
+        run: docker exec gshopping-test ./app/test/test-run-all-tests.sh
+
+      - name: Check test coverage of methods
+        run: docker exec gshopping-test ./app/test/test-check-coverage-all-methods.sh
+
+      - name: Check full test coverage
+        run: docker exec gshopping-test ./app/test/test-validate-coverage.sh
+
+      - name: Stop Test container
+        run: TEST=ci docker compose $CONTAINER down

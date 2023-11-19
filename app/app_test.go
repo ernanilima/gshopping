@@ -18,7 +18,7 @@ import (
 )
 
 func TestApp(t *testing.T) {
-	configs := helpers.GetConfigsForIntegrationTesting(context.Background())
+	configs := helpers.GetConfigsForIntegrationTesting(context.Background(), t)
 	databaseConfig := &database.DatabaseConfig{Config: configs}
 	databaseConfig.UPMigrations()
 

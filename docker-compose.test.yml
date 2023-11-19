@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  gshopping-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: gshopping-test
+    privileged: true
+    entrypoint: ./docker-entrypoint.test.sh
+    environment:
+      - TEST=$TEST
+      - TESTCONTAINERS_RYUK_DISABLED="true"

@@ -1,0 +1,4 @@
+coverage.*
+go.sum
+.env
+db/.docker
