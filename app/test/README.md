@@ -1,5 +1,10 @@
 O arquivo `.ciignore` possui o nome dos módulos que devem ser ignorados, para saber o nome exato basta executar `go list ./...` e o nome dos módulos existentes serão exibidos
 
+## Executar testes com docker
+```bash
+docker compose -f docker-compose.test.yml up --build
+```
+
 ## Exibir funções para criar mock das interfaces
 
 ```bash
