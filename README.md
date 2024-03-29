@@ -1,7 +1,10 @@
 # GShopping
+[![NPM](https://img.shields.io/npm/l/react)](https://github.com/ernanilima/gshopping/blob/main/LICENSE)
 [![CI](https://github.com/ernanilima/gshopping/actions/workflows/ci.yml/badge.svg)](https://github.com/ernanilima/gshopping/actions/workflows/ci.yml)
 
 Este é um projeto em que desenvolvi uma API utilizando a linguagem Go. O principal propósito da aplicação é armazenar informações sobre produtos, incluindo seus códigos de barras e a respectiva marca a que pertencem. A API possibilita a fácil pesquisa e recuperação desses dados.
+
+Clique **[AQUI](https://wshopping.ernanilima.com.br)** para acessar a demonstração.
 
 #### WEB
 
@@ -47,4 +50,4 @@ Aproveite!
 
 ## Testes
 
-Para saber mais sobre os testes, basta clicar [AQUI](https://github.com/ernanilima/gshopping/tree/main/app/test)
+Para saber mais sobre os testes, basta clicar **[AQUI](https://github.com/ernanilima/gshopping/tree/main/app/test)**
