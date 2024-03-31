@@ -59,8 +59,8 @@ func (c *ProductConnection) FindAllProducts(filter string, pageable utils.Pageab
 	defer conn.Close()
 
 	query := fmt.Sprintf(`
-		SELECT COUNT(*) OVER(),
-				p.id id,
+		WITH produtos AS (
+			SELECT p.id id, 
 				p.barcode barcode,
 				p.description description,
 				b.id brand_id,
@@ -74,6 +74,14 @@ func (c *ProductConnection) FindAllProducts(filter string, pageable utils.Pageab
 					OR UPPER(unaccent(p.description)) ILIKE $1
 					OR UPPER(unaccent(b.description)) ILIKE $1)
 			END)
+		),
+		total_products AS (
+			SELECT COUNT(*) total
+			FROM produtos
+		)
+		SELECT total, p.*
+			FROM produtos p
+			CROSS JOIN total_products total
 			ORDER BY %s
 			LIMIT $2 OFFSET $3`, pageable.Sort)
 
