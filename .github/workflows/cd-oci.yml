@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       app_dir:
-        description: "Diretório na VPS"
-        default: "/home/ubuntu/api/test-api"
+        description: "Diretorio na VPS"
+        default: "/home/ubuntu/api/test-gshopping"
       branch:
         description: "Branch"
         default: "main"
@@ -27,18 +27,19 @@ jobs:
             BRANCH="${{ inputs.branch }}"
             REPO_SSH="git@github.com:${{ github.repository }}.git"
 
+            # Configura o SSH local para confiar na chave do GitHub
             mkdir -p ~/.ssh && chmod 700 ~/.ssh
             ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null || true
             chmod 644 ~/.ssh/known_hosts
 
-            # usa a chave já existente na VPS (~/.ssh/id_ed25519)
+            # Usa a chave privada ja existente
             export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes'
 
-            # cria pasta e ajusta owner
+            # Cria pasta destino e ajusta permissoes para o usuario atual
             sudo mkdir -p "$APP_DIR"
             sudo chown -R "$USER":"$USER" "$APP_DIR"
 
-            # clone ou pull
+            # Clona ou atualiza o repositorio
             if [ ! -d "$APP_DIR/.git" ]; then
               git clone --depth 1 --branch "$BRANCH" "$REPO_SSH" "$APP_DIR"
             else
@@ -47,5 +48,6 @@ jobs:
               git reset --hard "origin/$BRANCH"
             fi
 
-            # commit atual
-            cd "$APP_DIR" && git rev-parse --short HEAD
+            # Exibe commit atual
+            cd "$APP_DIR"
+            git log -1 --pretty=format:"Commit: %h%nAuthor: %an%nDate: %ad%nMessage: %s"
