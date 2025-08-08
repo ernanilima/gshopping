@@ -18,31 +18,34 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
           port: ${{ secrets.VPS_PORT }}
+          username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             set -euo pipefail
             APP_DIR="${{ inputs.app_dir }}"
             BRANCH="${{ inputs.branch }}"
-            REPO="${{ secrets.REPO_URL }}"
+            REPO_SSH="git@github.com:${{ github.repository }}.git"
 
-            # Dependências
-            if ! command -v git >/dev/null 2>&1; then
-              sudo apt-get update -y && sudo apt-get install -y git
-            fi
+            mkdir -p ~/.ssh && chmod 700 ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null || true
+            chmod 644 ~/.ssh/known_hosts
 
-            # Cria pasta e faz clone/pull
+            # usa a chave já existente na VPS (~/.ssh/id_ed25519)
+            export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes'
+
+            # cria pasta e ajusta owner
             sudo mkdir -p "$APP_DIR"
             sudo chown -R "$USER":"$USER" "$APP_DIR"
 
+            # clone ou pull
             if [ ! -d "$APP_DIR/.git" ]; then
-              git clone --branch "$BRANCH" "$REPO" "$APP_DIR"
+              git clone --depth 1 --branch "$BRANCH" "$REPO_SSH" "$APP_DIR"
             else
               cd "$APP_DIR"
               git fetch --all --prune
               git reset --hard "origin/$BRANCH"
             fi
 
-            # Opcional: mostrar commit atual
+            # commit atual
             cd "$APP_DIR" && git rev-parse --short HEAD
