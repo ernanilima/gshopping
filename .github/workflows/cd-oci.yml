@@ -1,0 +1,48 @@
+name: CD OCI
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_dir:
+        description: "Diretório na VPS"
+        default: "/home/ubuntu/api/test-api"
+      branch:
+        description: "Branch"
+        default: "main"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Executar pull na VPS (SSH)
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          port: ${{ secrets.VPS_PORT }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            APP_DIR="${{ inputs.app_dir }}"
+            BRANCH="${{ inputs.branch }}"
+            REPO="${{ secrets.REPO_URL }}"
+
+            # Dependências
+            if ! command -v git >/dev/null 2>&1; then
+              sudo apt-get update -y && sudo apt-get install -y git
+            fi
+
+            # Cria pasta e faz clone/pull
+            sudo mkdir -p "$APP_DIR"
+            sudo chown -R "$USER":"$USER" "$APP_DIR"
+
+            if [ ! -d "$APP_DIR/.git" ]; then
+              git clone --branch "$BRANCH" "$REPO" "$APP_DIR"
+            else
+              cd "$APP_DIR"
+              git fetch --all --prune
+              git reset --hard "origin/$BRANCH"
+            fi
+
+            # Opcional: mostrar commit atual
+            cd "$APP_DIR" && git rev-parse --short HEAD
