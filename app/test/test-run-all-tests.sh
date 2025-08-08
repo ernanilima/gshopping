@@ -8,8 +8,11 @@ docker rmi -f $(docker images -a -q) > /dev/null 2>&1
 echo -e "⏳\t Executando todos os testes"
 
 COVERAGE_OUT="coverage.out"
+CIIGNORE_PATH="./app/test/.ciignore"
+PKGS="$(go list ./... | grep -xvf "$CIIGNORE_PATH")"
+COVERPKG="$(echo "$PKGS" | tr '\n' ',')"
 
-go test -coverprofile=$COVERAGE_OUT ./... > test_output.txt
+go test -covermode=count -coverpkg="$COVERPKG" -coverprofile="$COVERAGE_OUT" $PKGS > test_output.txt
 
 if ! grep -q "FAIL" test_output.txt; then
     echo ".---------------------------------------------------------."

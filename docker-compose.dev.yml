@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   gshopping-api:
     build:
@@ -13,7 +12,7 @@ services:
       - DB_PASS=postgres
       - DB_NAME=gshopping
     ports:
-      - 4000:4000
+      - "4000:4000"
     depends_on:
       - gshopping-db
     networks:
@@ -28,7 +27,7 @@ services:
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
     restart: always
     ports:
-      - 45432:45432
+      - "45432:45432"
     environment:
       - POSTGRES_DB=gshopping
       - POSTGRES_USER=postgres
